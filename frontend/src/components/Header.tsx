@@ -9,6 +9,26 @@ interface SearchResult {
   icon: string;
 }
 
+// Mock search data - moved outside component to avoid unnecessary re-renders
+const allSearchableItems: SearchResult[] = [
+  { type: 'page', title: 'Dashboard', path: '/dashboard', icon: 'space_dashboard' },
+  { type: 'page', title: 'Inbox', path: '/inbox', icon: 'all_inbox' },
+  { type: 'page', title: 'RFQ Management', path: '/rfq-inbox', icon: 'assignment' },
+  { type: 'page', title: 'Quotations', path: '/quotations', icon: 'receipt_long' },
+  { type: 'page', title: 'Products', path: '/products', icon: 'package_2' },
+  { type: 'page', title: 'Clients', path: '/client-ledger', icon: 'groups' },
+  { type: 'page', title: 'Analytics', path: '/analytics', icon: 'monitoring' },
+  { type: 'page', title: 'Settings', path: '/system-config', icon: 'tune' },
+  { type: 'rfq', title: 'RFQ/25-26/2048', subtitle: 'Alpha Manufacturing', path: '/rfq-inbox', icon: 'assignment' },
+  { type: 'rfq', title: 'RFQ/25-26/2047', subtitle: 'Global Logistics', path: '/rfq-inbox', icon: 'assignment' },
+  { type: 'quote', title: 'QT-2048', subtitle: 'Server Upgrade Phase 2', path: '/quotations', icon: 'receipt_long' },
+  { type: 'quote', title: 'QT-2045', subtitle: 'Network Overhaul', path: '/quotations', icon: 'receipt_long' },
+  { type: 'client', title: 'Alpha Manufacturing Co.', subtitle: 'VIP Client', path: '/client-ledger', icon: 'business' },
+  { type: 'client', title: 'Global Logistics Ltd.', subtitle: 'Regular Client', path: '/client-ledger', icon: 'business' },
+  { type: 'product', title: 'Dell Server R750', subtitle: 'SKU: SRV-001', path: '/products', icon: 'dns' },
+  { type: 'product', title: 'HP Switch 48-Port', subtitle: 'SKU: NET-042', path: '/products', icon: 'settings_ethernet' },
+];
+
 const Header: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -27,26 +47,6 @@ const Header: React.FC = () => {
   });
 
   const isActive = (path: string) => location.pathname === path;
-
-  // Mock search data
-  const allSearchableItems: SearchResult[] = [
-    { type: 'page', title: 'Dashboard', path: '/dashboard', icon: 'space_dashboard' },
-    { type: 'page', title: 'Inbox', path: '/inbox', icon: 'all_inbox' },
-    { type: 'page', title: 'RFQ Management', path: '/rfq-inbox', icon: 'assignment' },
-    { type: 'page', title: 'Quotations', path: '/quotations', icon: 'receipt_long' },
-    { type: 'page', title: 'Products', path: '/products', icon: 'package_2' },
-    { type: 'page', title: 'Clients', path: '/client-ledger', icon: 'groups' },
-    { type: 'page', title: 'Analytics', path: '/analytics', icon: 'monitoring' },
-    { type: 'page', title: 'Settings', path: '/system-config', icon: 'tune' },
-    { type: 'rfq', title: 'RFQ/25-26/2048', subtitle: 'Alpha Manufacturing', path: '/rfq-inbox', icon: 'assignment' },
-    { type: 'rfq', title: 'RFQ/25-26/2047', subtitle: 'Global Logistics', path: '/rfq-inbox', icon: 'assignment' },
-    { type: 'quote', title: 'QT-2048', subtitle: 'Server Upgrade Phase 2', path: '/quotations', icon: 'receipt_long' },
-    { type: 'quote', title: 'QT-2045', subtitle: 'Network Overhaul', path: '/quotations', icon: 'receipt_long' },
-    { type: 'client', title: 'Alpha Manufacturing Co.', subtitle: 'VIP Client', path: '/client-ledger', icon: 'business' },
-    { type: 'client', title: 'Global Logistics Ltd.', subtitle: 'Regular Client', path: '/client-ledger', icon: 'business' },
-    { type: 'product', title: 'Dell Server R750', subtitle: 'SKU: SRV-001', path: '/products', icon: 'dns' },
-    { type: 'product', title: 'HP Switch 48-Port', subtitle: 'SKU: NET-042', path: '/products', icon: 'settings_ethernet' },
-  ];
 
   // Handle search
   useEffect(() => {
