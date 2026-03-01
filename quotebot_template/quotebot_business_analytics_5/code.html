@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Quotebot ERP RFQ Inbox</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --primary: #2563eb;
+            --sidebar-bg: #1e293b;
+            --border-color: #d1d5db;
+            --tally-bg: #f8fafc;
+            --tally-header: #f1f5f9;
+        }
+        * {
+            border-radius: 0 !important;
+        }
+        .material-symbols-outlined {
+            font-size: 18px;
+        }
+        .excel-grid {
+            border-collapse: collapse;
+        }
+        .excel-grid th, .excel-grid td {
+            border: 1px solid var(--border-color);
+            padding: 4px 8px;
+        }
+        .dense-list-item:hover {
+            background-color: #f1f5f9;
+        }
+        .dense-list-item.active {
+            background-color: #eff6ff;
+            border-left: 4px solid var(--primary);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-900 h-screen overflow-hidden flex flex-col font-['Inter']">
+<header class="h-10 bg-white border-b border-slate-300 flex items-center justify-between px-3 shrink-0 z-20">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-blue-600">terminal</span>
+<span class="font-bold text-xs uppercase tracking-tight">Quotebot ERP <span class="text-slate-400 font-normal">v2.4</span></span>
+</div>
+<nav class="flex h-full items-center gap-4 text-[11px] font-medium uppercase text-slate-500">
+<a class="hover:text-blue-600" href="#">Masters</a>
+<a class="text-blue-600 border-b-2 border-blue-600 h-10 flex items-center px-1" href="#">Transactions</a>
+<a class="hover:text-blue-600" href="#">Utilities</a>
+<a class="hover:text-blue-600" href="#">Reports</a>
+<a class="hover:text-blue-600" href="#">Display</a>
+</nav>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1 bg-slate-100 px-2 py-0.5 border border-slate-200">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+<span class="text-[10px] font-semibold uppercase">02-Jan-2024</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 cursor-pointer">settings</span>
+<span class="material-symbols-outlined text-slate-400 cursor-pointer">account_circle</span>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<aside class="w-48 bg-slate-800 text-slate-300 flex flex-col shrink-0">
+<div class="p-3 bg-slate-900 border-b border-slate-700">
+<span class="text-[10px] font-bold uppercase text-slate-500">Sales Vouchers</span>
+</div>
+<div class="flex-1 overflow-y-auto py-1">
+<a class="flex items-center gap-3 px-4 py-2 text-[11px] hover:bg-slate-700/50" href="#">
+<span class="material-symbols-outlined text-slate-500">dashboard</span> Dashboard
+                </a>
+<a class="flex items-center gap-3 px-4 py-2 text-[11px] bg-blue-600 text-white font-medium" href="#">
+<span class="material-symbols-outlined">inbox</span> RFQ Inbox
+                    <span class="ml-auto bg-blue-800 text-[9px] px-1">14</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-[11px] hover:bg-slate-700/50" href="#">
+<span class="material-symbols-outlined text-slate-500">description</span> Quotations
+                </a>
+<a class="flex items-center gap-3 px-4 py-2 text-[11px] hover:bg-slate-700/50" href="#">
+<span class="material-symbols-outlined text-slate-500">shopping_cart</span> Purchase Orders
+                </a>
+<div class="mt-4 px-4 py-2 text-[10px] font-bold uppercase text-slate-500 border-t border-slate-700">
+                    Maintenance
+                </div>
+<a class="flex items-center gap-3 px-4 py-2 text-[11px] hover:bg-slate-700/50" href="#">
+<span class="material-symbols-outlined text-slate-500">inventory</span> Price List
+                </a>
+<a class="flex items-center gap-3 px-4 py-2 text-[11px] hover:bg-slate-700/50" href="#">
+<span class="material-symbols-outlined text-slate-500">group</span> Party Ledger
+                </a>
+</div>
+<div class="p-3 bg-slate-900 flex justify-between">
+<span class="text-[9px] text-slate-500 uppercase">F1: Help</span>
+<span class="text-[9px] text-slate-500 uppercase">F11: Features</span>
+</div>
+</aside>
+<div class="w-80 border-r border-slate-300 flex flex-col shrink-0 bg-[#fefefe]">
+<div class="p-3 border-b border-slate-300 bg-slate-50 flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<h2 class="text-[11px] font-bold uppercase tracking-wider text-slate-600">Pending RFQs</h2>
+<span class="text-[10px] text-slate-400">Total: 42</span>
+</div>
+<div class="relative">
+<input class="w-full text-[11px] py-1 pl-7 pr-2 border border-slate-300 focus:ring-0 focus:border-blue-500 placeholder:italic" placeholder="Search RFQ No. or Party..." type="text"/>
+<span class="material-symbols-outlined absolute left-2 top-1.5 text-slate-400 !text-[14px]">search</span>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto">
+<div class="dense-list-item active p-3 border-b border-slate-200 cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold text-blue-700 uppercase">RFQ/2023/1084</span>
+<span class="text-[9px] bg-amber-100 text-amber-700 px-1 border border-amber-200 uppercase font-medium">Priority</span>
+</div>
+<div class="text-[11px] font-semibold text-slate-800 truncate">Global Logistics Solutions Ltd</div>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[10px] text-slate-500">02-Jan-2024</span>
+<span class="text-[10px] font-mono text-slate-400">8 Items</span>
+</div>
+</div>
+<div class="dense-list-item p-3 border-b border-slate-200 cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold text-slate-600 uppercase">RFQ/2023/1083</span>
+</div>
+<div class="text-[11px] font-semibold text-slate-800 truncate">Tech-Corp International Inc.</div>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[10px] text-slate-500">01-Jan-2024</span>
+<span class="text-[10px] font-mono text-slate-400">3 Items</span>
+</div>
+</div>
+<div class="dense-list-item p-3 border-b border-slate-200 cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold text-slate-600 uppercase">RFQ/2023/1082</span>
+</div>
+<div class="text-[11px] font-semibold text-slate-800 truncate">Swift Manufacturing Unit 4</div>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[10px] text-slate-500">31-Dec-2023</span>
+<span class="text-[10px] font-mono text-slate-400">12 Items</span>
+</div>
+</div>
+<div class="dense-list-item p-3 border-b border-slate-200 cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold text-slate-600 uppercase">RFQ/2023/1081</span>
+</div>
+<div class="text-[11px] font-semibold text-slate-800 truncate">Apex Industrial Supplies</div>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[10px] text-slate-500">30-Dec-2023</span>
+<span class="text-[10px] font-mono text-slate-400">2 Items</span>
+</div>
+</div>
+<div class="dense-list-item p-3 border-b border-slate-200 cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="text-[10px] font-bold text-slate-600 uppercase">RFQ/2023/1080</span>
+</div>
+<div class="text-[11px] font-semibold text-slate-800 truncate">Northern Power Grid</div>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[10px] text-slate-500">30-Dec-2023</span>
+<span class="text-[10px] font-mono text-slate-400">15 Items</span>
+</div>
+</div>
+</div>
+<div class="p-2 border-t border-slate-300 bg-slate-50 flex gap-2">
+<button class="flex-1 bg-white border border-slate-300 py-1 text-[11px] font-semibold uppercase hover:bg-slate-100">Refresh</button>
+<button class="flex-1 bg-white border border-slate-300 py-1 text-[11px] font-semibold uppercase hover:bg-slate-100">Filter</button>
+</div>
+</div>
+<main class="flex-1 flex flex-col min-w-0 bg-white">
+<div class="h-12 border-b border-slate-300 flex items-center justify-between px-4 bg-slate-50 shrink-0">
+<div class="flex items-center gap-4">
+<h1 class="text-[13px] font-bold uppercase tracking-tight text-slate-700">RFQ Overview: RFQ/2023/1084</h1>
+<div class="h-4 w-px bg-slate-300"></div>
+<span class="text-[11px] text-slate-500">Email Received: Jan 02, 10:24 AM</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 bg-blue-600 text-white text-[11px] font-bold uppercase hover:bg-blue-700">Generate Quote</button>
+<button class="px-3 py-1.5 border border-slate-300 text-[11px] font-bold uppercase hover:bg-slate-100">Print Preview</button>
+<button class="px-3 py-1.5 border border-slate-300 text-[11px] font-bold uppercase hover:bg-slate-100">Forward</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-4 flex flex-col gap-6">
+<section>
+<h3 class="text-[10px] font-bold uppercase text-slate-400 mb-2 flex items-center gap-2">
+<span class="material-symbols-outlined !text-[14px]">info</span> Party Details &amp; Ledger
+                    </h3>
+<div class="border border-slate-300">
+<table class="w-full text-[11px]">
+<tbody class="divide-y divide-slate-200">
+<tr class="grid grid-cols-4 divide-x divide-slate-200">
+<td class="p-2 bg-slate-50 font-semibold text-slate-600">Party Name</td>
+<td class="p-2 col-span-3">Global Logistics Solutions Ltd</td>
+</tr>
+<tr class="grid grid-cols-4 divide-x divide-slate-200">
+<td class="p-2 bg-slate-50 font-semibold text-slate-600">Contact Person</td>
+<td class="p-2">Mr. Robert Chen</td>
+<td class="p-2 bg-slate-50 font-semibold text-slate-600">GSTIN / UIN</td>
+<td class="p-2 font-mono">27AAACG1234F1Z5</td>
+</tr>
+<tr class="grid grid-cols-4 divide-x divide-slate-200">
+<td class="p-2 bg-slate-50 font-semibold text-slate-600">Current Balance</td>
+<td class="p-2 text-red-600 font-bold">₹ 14,50,200.00 Dr</td>
+<td class="p-2 bg-slate-50 font-semibold text-slate-600">Credit Limit</td>
+<td class="p-2">₹ 50,00,000.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section class="flex-1 flex flex-col min-h-[300px]">
+<div class="flex justify-between items-center mb-2">
+<h3 class="text-[10px] font-bold uppercase text-slate-400 flex items-center gap-2">
+<span class="material-symbols-outlined !text-[14px]">grid_on</span> Extracted Items from Email
+                        </h3>
+<div class="flex gap-2">
+<button class="text-[10px] text-blue-600 uppercase font-bold hover:underline">Edit Grid</button>
+<button class="text-[10px] text-blue-600 uppercase font-bold hover:underline">Re-scan OCR</button>
+</div>
+</div>
+<div class="flex-1 border border-slate-300 overflow-auto bg-slate-50">
+<table class="excel-grid w-full text-[11px] bg-white">
+<thead class="bg-slate-100 text-slate-600 text-left sticky top-0">
+<tr>
+<th class="w-10 text-center">#</th>
+<th>Product / Part Number</th>
+<th class="w-32">Specification</th>
+<th class="w-20 text-right">Qty</th>
+<th class="w-20">Unit</th>
+<th class="w-32 text-right">Est. Rate</th>
+<th class="w-32 text-right">Amount</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200">
+<tr>
+<td class="text-center bg-slate-50">1</td>
+<td>Industrial Grade Steel Cable - 12mm</td>
+<td>SS-304 / 500m Roll</td>
+<td class="text-right">10.00</td>
+<td class="text-center">Roll</td>
+<td class="text-right">12,500.00</td>
+<td class="text-right font-semibold">1,25,000.00</td>
+</tr>
+<tr>
+<td class="text-center bg-slate-50">2</td>
+<td>Heavy Duty Pulley System</td>
+<td>Max Load 5T</td>
+<td class="text-right">4.00</td>
+<td class="text-center">Nos</td>
+<td class="text-right">45,200.00</td>
+<td class="text-right font-semibold">1,80,800.00</td>
+</tr>
+<tr>
+<td class="text-center bg-slate-50">3</td>
+<td>Synthetic Lubricant L-84</td>
+<td>20L Can</td>
+<td class="text-right">15.00</td>
+<td class="text-center">Can</td>
+<td class="text-right">3,400.00</td>
+<td class="text-right font-semibold">51,000.00</td>
+</tr>
+<tr>
+<td class="text-center bg-slate-50">4</td>
+<td>Custom Mounting Bracket</td>
+<td>As per Drw #4082</td>
+<td class="text-right">24.00</td>
+<td class="text-center">Set</td>
+<td class="text-right">850.00</td>
+<td class="text-right font-semibold">20,400.00</td>
+</tr>
+<script>
+                                    for(let i=5; i<=15; i++) {
+                                        document.write(`
+                                            <tr>
+                                                <td class="text-center bg-slate-50 text-slate-300">${i}</td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                        `);
+                                    }
+                                </script>
+</tbody>
+<tfoot class="sticky bottom-0 bg-slate-100 font-bold border-t-2 border-slate-400">
+<tr>
+<td class="text-right p-2 uppercase text-[10px]" colspan="3">Total Extracted Value</td>
+<td class="text-right p-2">53.00</td>
+<td></td>
+<td></td>
+<td class="text-right p-2 text-blue-700">₹ 3,77,200.00</td>
+</tr>
+</tfoot>
+</table>
+</div>
+</section>
+</div>
+<footer class="h-10 bg-slate-800 flex items-center px-1 gap-1 shrink-0 overflow-x-auto no-scrollbar">
+<button class="h-8 px-2 bg-slate-700 text-white text-[10px] border border-slate-600 flex flex-col items-center justify-center min-w-[70px] hover:bg-slate-600">
+<span class="text-blue-400 font-bold">F2</span>
+<span class="uppercase">Date</span>
+</button>
+<button class="h-8 px-2 bg-slate-700 text-white text-[10px] border border-slate-600 flex flex-col items-center justify-center min-w-[70px] hover:bg-slate-600">
+<span class="text-blue-400 font-bold">F4</span>
+<span class="uppercase">Party</span>
+</button>
+<button class="h-8 px-2 bg-slate-700 text-white text-[10px] border border-slate-600 flex flex-col items-center justify-center min-w-[70px] hover:bg-slate-600">
+<span class="text-blue-400 font-bold">F7</span>
+<span class="uppercase">Stock</span>
+</button>
+<button class="h-8 px-2 bg-slate-700 text-white text-[10px] border border-slate-600 flex flex-col items-center justify-center min-w-[70px] hover:bg-slate-600">
+<span class="text-blue-400 font-bold">F8</span>
+<span class="uppercase">Sales</span>
+</button>
+<button class="h-8 px-2 bg-slate-700 text-white text-[10px] border border-slate-600 flex flex-col items-center justify-center min-w-[70px] hover:bg-slate-600">
+<span class="text-blue-400 font-bold">F9</span>
+<span class="uppercase">Purchase</span>
+</button>
+<div class="ml-auto flex gap-1">
+<button class="h-8 px-4 bg-red-700 text-white text-[10px] font-bold uppercase hover:bg-red-800">
+                        Esc: Close
+                    </button>
+<button class="h-8 px-4 bg-green-700 text-white text-[10px] font-bold uppercase hover:bg-green-800">
+                        Ctrl+A: Accept
+                    </button>
+</div>
+</footer>
+</main>
+</div>
+
+</body></html>

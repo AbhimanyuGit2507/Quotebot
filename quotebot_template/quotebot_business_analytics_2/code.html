@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Quotebot ERP Quotations</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --primary: #1e3a8a;
+            --primary-hover: #1e40af;
+            --accent: #EF5362;
+            --bg-erp: #f3f4f6;
+            --border-erp: #d1d5db;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-erp);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+            font-size: 20px;
+        }
+        .erp-table tr:nth-child(even) {
+            background-color: #f9fafb;
+        }
+        .erp-input-border {
+            border: 1px solid #d1d5db;
+        }
+        .sidebar-item-active {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-left: 4px solid var(--accent);
+        }
+    </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden text-gray-800">
+<header class="h-12 bg-[#2c3e50] text-white flex items-center justify-between px-4 shrink-0 shadow-md z-30">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-accent">receipt_long</span>
+<span class="font-bold text-lg tracking-tight uppercase">Quotebot <span class="text-accent">ERP</span></span>
+</div>
+<nav class="hidden md:flex gap-1">
+<button class="px-3 py-1 text-sm hover:bg-white/10 rounded transition-colors">Dashboard</button>
+<button class="px-3 py-1 text-sm bg-white/20 rounded font-medium">Sales</button>
+<button class="px-3 py-1 text-sm hover:bg-white/10 rounded transition-colors">Inventory</button>
+<button class="px-3 py-1 text-sm hover:bg-white/10 rounded transition-colors">Accounting</button>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<div class="relative group">
+<input class="bg-white/10 border-none text-xs rounded px-3 py-1 w-48 focus:ring-1 focus:ring-accent placeholder-white/50" placeholder="Search (Alt+G)" type="text"/>
+</div>
+<span class="material-symbols-outlined cursor-pointer hover:text-accent">notifications</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-accent">settings</span>
+<div class="h-8 w-8 rounded-full bg-accent flex items-center justify-center text-xs font-bold">JD</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<aside class="w-16 bg-[#34495e] flex flex-col items-center py-4 gap-6 shrink-0 border-r border-white/5">
+<span class="material-symbols-outlined text-white/70 hover:text-white cursor-pointer" title="Customers">group</span>
+<span class="material-symbols-outlined text-white cursor-pointer border-l-2 border-accent pl-1 w-full text-center" title="Quotations">request_quote</span>
+<span class="material-symbols-outlined text-white/70 hover:text-white cursor-pointer" title="Sales Orders">shopping_cart</span>
+<span class="material-symbols-outlined text-white/70 hover:text-white cursor-pointer" title="Invoices">description</span>
+<span class="material-symbols-outlined text-white/70 hover:text-white cursor-pointer" title="Payments">payments</span>
+</aside>
+<div class="w-80 bg-white border-r border-border-erp flex flex-col shrink-0 shadow-inner">
+<div class="p-3 border-b border-border-erp bg-gray-50 flex items-center justify-between">
+<h2 class="font-bold text-sm uppercase tracking-wider text-gray-600">Quotations</h2>
+<button class="p-1 hover:bg-gray-200 rounded">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+</button>
+</div>
+<div class="flex-1 overflow-y-auto">
+<div class="p-3 border-b border-border-erp hover:bg-blue-50 cursor-pointer bg-blue-50/30 border-l-4 border-accent">
+<div class="flex justify-between items-start mb-1">
+<span class="font-bold text-sm text-blue-900">QT-2023-0892</span>
+<span class="text-[10px] font-bold px-1.5 py-0.5 bg-yellow-100 text-yellow-700 rounded border border-yellow-200 uppercase">Draft</span>
+</div>
+<div class="text-xs font-semibold text-gray-700 truncate">TechGlobal Solutions Inc.</div>
+<div class="flex justify-between items-center mt-2">
+<span class="text-xs text-gray-500">12 Oct 2023</span>
+<span class="text-sm font-bold text-gray-900">$12,450.00</span>
+</div>
+</div>
+<div class="p-3 border-b border-border-erp hover:bg-blue-50 cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="font-bold text-sm text-gray-900">QT-2023-0891</span>
+<span class="text-[10px] font-bold px-1.5 py-0.5 bg-green-100 text-green-700 rounded border border-green-200 uppercase">Sent</span>
+</div>
+<div class="text-xs font-semibold text-gray-700 truncate">NorthStar Logistics</div>
+<div class="flex justify-between items-center mt-2">
+<span class="text-xs text-gray-500">11 Oct 2023</span>
+<span class="text-sm font-bold text-gray-900">$8,200.00</span>
+</div>
+</div>
+<div class="p-3 border-b border-border-erp hover:bg-blue-50 cursor-pointer">
+<div class="flex justify-between items-start mb-1">
+<span class="font-bold text-sm text-gray-900">QT-2023-0890</span>
+<span class="text-[10px] font-bold px-1.5 py-0.5 bg-blue-100 text-blue-700 rounded border border-blue-200 uppercase">Accepted</span>
+</div>
+<div class="text-xs font-semibold text-gray-700 truncate">Peak Performance Co.</div>
+<div class="flex justify-between items-center mt-2">
+<span class="text-xs text-gray-500">10 Oct 2023</span>
+<span class="text-sm font-bold text-gray-900">$24,000.00</span>
+</div>
+</div>
+<div class="p-3 border-b border-border-erp hover:bg-blue-50 cursor-pointer" v-for="i in 5">
+<div class="flex justify-between items-start mb-1">
+<span class="font-bold text-sm text-gray-900">QT-2023-0889</span>
+<span class="text-[10px] font-bold px-1.5 py-0.5 bg-red-100 text-red-700 rounded border border-red-200 uppercase">Expired</span>
+</div>
+<div class="text-xs font-semibold text-gray-700 truncate">Global Connect S.A.</div>
+<div class="flex justify-between items-center mt-2">
+<span class="text-xs text-gray-500">08 Oct 2023</span>
+<span class="text-sm font-bold text-gray-900">$4,150.00</span>
+</div>
+</div>
+</div>
+<div class="p-2 bg-gray-100 border-t border-border-erp">
+<button class="w-full bg-accent text-white py-1.5 text-xs font-bold rounded shadow hover:bg-opacity-90 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm">add_circle</span>
+                    NEW QUOTATION
+                </button>
+</div>
+</div>
+<main class="flex-1 bg-white flex flex-col overflow-hidden">
+<div class="h-14 border-b border-border-erp bg-gray-50 flex items-center justify-between px-6 shrink-0">
+<div class="flex items-center gap-4">
+<h1 class="text-lg font-bold text-gray-800">QT-2023-0892</h1>
+<div class="flex gap-2">
+<button class="px-3 py-1 text-xs border border-border-erp bg-white hover:bg-gray-100 rounded flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-sm">print</span> Print
+                        </button>
+<button class="px-3 py-1 text-xs border border-border-erp bg-white hover:bg-gray-100 rounded flex items-center gap-1 font-medium">
+<span class="material-symbols-outlined text-sm">mail</span> Email
+                        </button>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-4 py-1.5 text-xs border border-border-erp bg-white hover:bg-gray-100 rounded font-bold uppercase tracking-tight flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">content_copy</span> Duplicate
+                    </button>
+<button class="px-4 py-1.5 text-xs bg-blue-700 text-white rounded font-bold uppercase tracking-tight flex items-center gap-2 hover:bg-blue-800 shadow-sm">
+<span class="material-symbols-outlined text-sm">edit</span> Edit
+                    </button>
+<div class="h-6 w-px bg-gray-300 mx-2"></div>
+<button class="p-1 hover:text-red-500">
+<span class="material-symbols-outlined">delete</span>
+</button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-8">
+<div class="max-w-4xl mx-auto">
+<div class="grid grid-cols-2 gap-8 mb-8">
+<table class="w-full text-sm border-collapse">
+<tbody>
+<tr>
+<td class="w-1/3 py-2 text-gray-500 font-medium">Customer</td>
+<td class="py-2 font-bold text-blue-900">TechGlobal Solutions Inc.</td>
+</tr>
+<tr class="border-b border-gray-100">
+<td class="py-2 text-gray-500 font-medium">Billing Address</td>
+<td class="py-2 text-xs text-gray-700">123 Corporate Way, Silicon Valley<br/>California, 94043, US</td>
+</tr>
+<tr class="border-b border-gray-100">
+<td class="py-2 text-gray-500 font-medium">Contact</td>
+<td class="py-2 text-gray-700">James Wilson (Purchasing Manager)</td>
+</tr>
+<tr>
+<td class="py-2 text-gray-500 font-medium">Reference</td>
+<td class="py-2 text-gray-700 italic">PO-REF-7721</td>
+</tr>
+</tbody>
+</table>
+<table class="w-full text-sm border-collapse">
+<tbody>
+<tr class="border-b border-gray-100">
+<td class="w-1/3 py-2 text-gray-500 font-medium">Quotation Date</td>
+<td class="py-2 font-semibold">12 Oct 2023</td>
+</tr>
+<tr class="border-b border-gray-100">
+<td class="py-2 text-gray-500 font-medium">Expiry Date</td>
+<td class="py-2 font-semibold text-accent">11 Nov 2023</td>
+</tr>
+<tr class="border-b border-gray-100">
+<td class="py-2 text-gray-500 font-medium">Currency</td>
+<td class="py-2">USD - US Dollar</td>
+</tr>
+<tr>
+<td class="py-2 text-gray-500 font-medium">Price List</td>
+<td class="py-2">Standard Wholesale</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mb-8 overflow-hidden rounded border border-border-erp">
+<table class="w-full text-sm text-left">
+<thead class="bg-gray-100 text-gray-600 font-bold uppercase text-[11px] tracking-wider border-b border-border-erp">
+<tr>
+<th class="px-4 py-3 w-12 text-center">#</th>
+<th class="px-4 py-3">Item &amp; Description</th>
+<th class="px-4 py-3 text-right w-24">Qty</th>
+<th class="px-4 py-3 text-right w-32">Rate</th>
+<th class="px-4 py-3 text-right w-32">Amount</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-200">
+<tr>
+<td class="px-4 py-3 text-center text-gray-400">1</td>
+<td class="px-4 py-3">
+<div class="font-bold text-gray-800">Cloud Hosting - Pro Tier</div>
+<div class="text-[11px] text-gray-500 italic">Annual subscription for enterprise servers with 99.9% uptime.</div>
+</td>
+<td class="px-4 py-3 text-right">1.00</td>
+<td class="px-4 py-3 text-right">8,500.00</td>
+<td class="px-4 py-3 text-right font-bold">8,500.00</td>
+</tr>
+<tr>
+<td class="px-4 py-3 text-center text-gray-400">2</td>
+<td class="px-4 py-3">
+<div class="font-bold text-gray-800">SSL Management Suite</div>
+<div class="text-[11px] text-gray-500 italic">256-bit encryption certificates for up to 50 domains.</div>
+</td>
+<td class="px-4 py-3 text-right">5.00</td>
+<td class="px-4 py-3 text-right">450.00</td>
+<td class="px-4 py-3 text-right font-bold">2,250.00</td>
+</tr>
+<tr>
+<td class="px-4 py-3 text-center text-gray-400">3</td>
+<td class="px-4 py-3">
+<div class="font-bold text-gray-800">On-site Consultation Fees</div>
+<div class="text-[11px] text-gray-500 italic">Configuration and training (8 hours package).</div>
+</td>
+<td class="px-4 py-3 text-right">1.00</td>
+<td class="px-4 py-3 text-right">1,700.00</td>
+<td class="px-4 py-3 text-right font-bold">1,700.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="flex justify-end">
+<div class="w-80 bg-gray-50 p-6 rounded border border-border-erp">
+<div class="flex justify-between text-sm mb-2">
+<span class="text-gray-500">Sub Total</span>
+<span class="font-semibold text-gray-800">12,450.00</span>
+</div>
+<div class="flex justify-between text-sm mb-2">
+<span class="text-gray-500">Tax (0%)</span>
+<span class="font-semibold text-gray-800">0.00</span>
+</div>
+<div class="h-px bg-gray-300 my-4"></div>
+<div class="flex justify-between text-base">
+<span class="font-bold text-gray-900 uppercase tracking-wide">Total</span>
+<span class="font-extrabold text-blue-900">USD 12,450.00</span>
+</div>
+</div>
+</div>
+<div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-8 pt-8 border-t border-gray-100">
+<div>
+<h4 class="text-xs font-bold text-gray-500 uppercase mb-3">Terms &amp; Conditions</h4>
+<p class="text-xs text-gray-600 leading-relaxed">
+                                1. Payment is required within 30 days from the date of acceptance.<br/>
+                                2. Quotation is valid for 30 calendar days.<br/>
+                                3. Software licenses are subject to EULA agreements.
+                            </p>
+</div>
+<div class="bg-yellow-50/50 p-4 rounded border border-yellow-100">
+<h4 class="text-xs font-bold text-yellow-700 uppercase mb-3">Internal Notes</h4>
+<p class="text-xs text-yellow-800">
+                                Customer is looking for a multi-year deal if this trial phase goes well. VIP client, handle with priority.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+<div class="h-8 bg-gray-100 border-t border-border-erp px-4 flex items-center justify-between text-[11px] font-medium text-gray-500 shrink-0">
+<div class="flex items-center gap-4">
+<span>Created By: <strong>Admin User</strong></span>
+<span>Created On: <strong>12-Oct-2023 10:45 AM</strong></span>
+</div>
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1 text-green-600"><span class="h-2 w-2 rounded-full bg-green-500"></span> System Online</span>
+<span>Server: US-EAST-01</span>
+</div>
+</div>
+</main>
+</div>
+
+</body></html>

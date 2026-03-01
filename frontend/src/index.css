@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 
+  Primary Font Family: Inter
+  - Used throughout the application except Header and Sidebar components
+  - Inter weights available: 300 (Light), 400 (Regular), 500 (Medium), 
+    600 (Semibold), 700 (Bold), 800 (Extra Bold), 900 (Black)
+  
+  Usage Guidelines:
+  - Body text: font-weight 400 (Regular)
+  - UI labels/buttons: font-weight 500 (Medium)
+  - Subheadings: font-weight 600 (Semibold)
+  - Main headings: font-weight 700 (Bold)
+  - Emphasis/Callouts: font-weight 800-900 (Extra Bold/Black)
+  - Financial data: Use tabular-nums variant for alignment
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+:root {
+  --primary-color: #2563eb;
+  --primary-hover: #1d4ed8;
+  --sidebar-bg: #1e293b;
+  --border-color: #e2e8f0;
+  --table-header: #f8fafc;
+  --erp-green: #16a34a;
+  --erp-gray: #64748b;
+  --erp-primary: #1e293b;
+  --erp-accent: #2563eb;
+  --erp-bg: #f8fafc;
+  --erp-border: #cbd5e1;
+  --erp-text: #334155;
+  --erp-text-muted: #64748b;
+  --primary: #1e3a8a;
+  --accent: #EF5362;
+  --bg-erp: #f3f4f6;
+  --border-erp: #d1d5db;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-weight: 400;
+}
+
+/* 
+  Header and Sidebar use system fonts (font-sans) for UI chrome
+  Content areas use Inter for consistency and readability
+*/
+
+/* Inter Font Weight Utilities for different contexts */
+@layer utilities {
+  .font-inter-light {
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+  }
+  
+  .font-inter-normal {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+  }
+  
+  .font-inter-medium {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+  }
+  
+  .font-inter-semibold {
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+  }
+  
+  .font-inter-bold {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+  }
+  
+  .font-inter-extrabold {
+    font-family: 'Inter', sans-serif;
+    font-weight: 800;
+  }
+  
+  .font-inter-black {
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
+  }
+}
+
+/* Heading defaults with Inter */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+}
+
+/* Enable tabular numbers for better alignment in tables and financial data */
+table, .font-inter-tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+  font-size: 20px;
+}
+
+.erp-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.erp-table th,
+.erp-table td {
+  border: 1px solid var(--border-color);
+  padding: 8px 12px;
+}
+
+.erp-table th {
+  background-color: var(--table-header);
+  text-align: left;
+  font-weight: 600;
+  color: #334155;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.025em;
+}
+
+.active-row {
+  background-color: #eff6ff;
+  border-left: 3px solid var(--primary-color);
+}
+
+.dense-table th,
+.dense-table td {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--erp-border);
+}
+
+.sku-list-item:hover {
+  background-color: #f1f5f9;
+}
+
+.sku-list-item.active {
+  background-color: #e2e8f0;
+  border-left: 4px solid var(--erp-accent);
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

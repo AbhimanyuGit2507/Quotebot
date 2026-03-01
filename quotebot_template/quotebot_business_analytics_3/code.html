@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Quotebot ERP Product Master</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --erp-primary: #1e293b;
+            --erp-accent: #2563eb;
+            --erp-bg: #f8fafc;
+            --erp-border: #cbd5e1;
+            --erp-text: #334155;
+            --erp-text-muted: #64748b;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+            font-size: 20px;
+        }
+        .dense-table th, .dense-table td {
+            padding: 0.5rem 0.75rem;
+            border: 1px solid var(--erp-border);
+        }
+        .sku-list-item:hover {
+            background-color: #f1f5f9;
+        }
+        .sku-list-item.active {
+            background-color: #e2e8f0;
+            border-left: 4px solid var(--erp-accent);
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+        }
+    </style>
+</head>
+<body class="bg-[var(--erp-bg)] text-[var(--erp-text)] h-screen overflow-hidden flex flex-col font-['Inter']">
+<header class="bg-[var(--erp-primary)] text-white h-10 flex items-center justify-between px-4 shrink-0 z-20">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-white">inventory_2</span>
+<span class="font-bold text-sm tracking-tight uppercase">Quotebot ERP</span>
+</div>
+<nav class="hidden md:flex gap-4 text-xs font-medium uppercase tracking-wider">
+<a class="hover:text-blue-300" href="#">Dashboard</a>
+<a class="text-blue-400 border-b border-blue-400 pb-0.5" href="#">Inventory</a>
+<a class="hover:text-blue-300" href="#">Sales</a>
+<a class="hover:text-blue-300" href="#">Purchases</a>
+<a class="hover:text-blue-300" href="#">Accounting</a>
+</nav>
+</div>
+<div class="flex items-center gap-4 text-xs">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">person</span>
+<span>Admin User</span>
+</div>
+<span class="material-symbols-outlined cursor-pointer">settings</span>
+<span class="material-symbols-outlined cursor-pointer">help</span>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<aside class="w-48 bg-white border-r border-[var(--erp-border)] flex flex-col shrink-0">
+<div class="p-3 border-b border-[var(--erp-border)] bg-slate-50">
+<span class="text-[10px] font-bold text-[var(--erp-text-muted)] uppercase tracking-widest">Inventory Modules</span>
+</div>
+<div class="flex-1 overflow-y-auto">
+<a class="flex items-center gap-3 px-4 py-2 text-sm text-[var(--erp-accent)] bg-blue-50 font-semibold border-r-2 border-[var(--erp-accent)]" href="#">
+<span class="material-symbols-outlined">category</span>
+                    Items
+                </a>
+<a class="flex items-center gap-3 px-4 py-2 text-sm text-[var(--erp-text)] hover:bg-slate-50" href="#">
+<span class="material-symbols-outlined">adjust</span>
+                    Adjustments
+                </a>
+<a class="flex items-center gap-3 px-4 py-2 text-sm text-[var(--erp-text)] hover:bg-slate-50" href="#">
+<span class="material-symbols-outlined">package_2</span>
+                    Transfer
+                </a>
+<a class="flex items-center gap-3 px-4 py-2 text-sm text-[var(--erp-text)] hover:bg-slate-50" href="#">
+<span class="material-symbols-outlined">groups</span>
+                    Item Groups
+                </a>
+<div class="mt-4 p-3 border-t border-[var(--erp-border)]">
+<span class="text-[10px] font-bold text-[var(--erp-text-muted)] uppercase tracking-widest">Reports</span>
+</div>
+<a class="flex items-center gap-3 px-4 py-2 text-sm text-[var(--erp-text)] hover:bg-slate-50" href="#">
+<span class="material-symbols-outlined">summarize</span>
+                    Stock Summary
+                </a>
+<a class="flex items-center gap-3 px-4 py-2 text-sm text-[var(--erp-text)] hover:bg-slate-50" href="#">
+<span class="material-symbols-outlined">history</span>
+                    Ledger
+                </a>
+</div>
+</aside>
+<div class="w-[400px] bg-white border-r border-[var(--erp-border)] flex flex-col shrink-0">
+<div class="p-3 bg-slate-50 border-b border-[var(--erp-border)]">
+<div class="flex items-center justify-between mb-2">
+<h2 class="text-sm font-bold uppercase tracking-tighter">Product Catalog</h2>
+<button class="bg-[var(--erp-accent)] text-white text-[10px] px-2 py-1 rounded font-bold uppercase">+ New Item</button>
+</div>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 pl-2 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-[var(--erp-text-muted)] text-sm">search</span>
+</span>
+<input class="w-full pl-8 pr-2 py-1 text-xs border border-[var(--erp-border)] rounded focus:ring-1 focus:ring-[var(--erp-accent)] focus:border-[var(--erp-accent)]" placeholder="Search SKU, Name..." type="text"/>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto">
+<div class="sku-list-item active p-3 border-b border-[var(--erp-border)] cursor-pointer">
+<div class="flex justify-between items-start mb-0.5">
+<span class="text-xs font-bold text-[var(--erp-accent)]">SKU-MAC-001</span>
+<span class="text-[10px] bg-green-100 text-green-700 px-1 font-bold">In Stock</span>
+</div>
+<div class="text-sm font-medium">Apple MacBook Pro 14" M2</div>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[10px] text-[var(--erp-text-muted)]">Category: Electronics</span>
+<span class="text-xs font-bold">$1,999.00</span>
+</div>
+</div>
+<div class="sku-list-item p-3 border-b border-[var(--erp-border)] cursor-pointer">
+<div class="flex justify-between items-start mb-0.5">
+<span class="text-xs font-bold text-[var(--erp-text-muted)]">SKU-DLX-015</span>
+<span class="text-[10px] bg-green-100 text-green-700 px-1 font-bold">In Stock</span>
+</div>
+<div class="text-sm font-medium">Dell XPS 15 9530</div>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[10px] text-[var(--erp-text-muted)]">Category: Electronics</span>
+<span class="text-xs font-bold">$1,450.00</span>
+</div>
+</div>
+<div class="sku-list-item p-3 border-b border-[var(--erp-border)] cursor-pointer">
+<div class="flex justify-between items-start mb-0.5">
+<span class="text-xs font-bold text-[var(--erp-text-muted)]">SKU-THK-X1C</span>
+<span class="text-[10px] bg-red-100 text-red-700 px-1 font-bold">Out of Stock</span>
+</div>
+<div class="text-sm font-medium">Lenovo ThinkPad X1 Carbon Gen 11</div>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[10px] text-[var(--erp-text-muted)]">Category: Electronics</span>
+<span class="text-xs font-bold">$1,620.00</span>
+</div>
+</div>
+<div class="sku-list-item p-3 border-b border-[var(--erp-border)] cursor-pointer">
+<div class="flex justify-between items-start mb-0.5">
+<span class="text-xs font-bold text-[var(--erp-text-muted)]">SKU-LOG-MX3</span>
+<span class="text-[10px] bg-green-100 text-green-700 px-1 font-bold">In Stock</span>
+</div>
+<div class="text-sm font-medium">Logitech MX Master 3S Mouse</div>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[10px] text-[var(--erp-text-muted)]">Category: Peripherals</span>
+<span class="text-xs font-bold">$99.00</span>
+</div>
+</div>
+<div class="sku-list-item p-3 border-b border-[var(--erp-border)] cursor-pointer">
+<div class="flex justify-between items-start mb-0.5">
+<span class="text-xs font-bold text-[var(--erp-text-muted)]">SKU-SAM-S23</span>
+<span class="text-[10px] bg-orange-100 text-orange-700 px-1 font-bold">Low Stock</span>
+</div>
+<div class="text-sm font-medium">Samsung Galaxy S23 Ultra</div>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[10px] text-[var(--erp-text-muted)]">Category: Mobile</span>
+<span class="text-xs font-bold">$1,199.00</span>
+</div>
+</div>
+<div class="sku-list-item p-3 border-b border-[var(--erp-border)] cursor-pointer" v-for="i in 5">
+<div class="flex justify-between items-start mb-0.5">
+<span class="text-xs font-bold text-[var(--erp-text-muted)]">SKU-PRN-001</span>
+<span class="text-[10px] bg-green-100 text-green-700 px-1 font-bold">In Stock</span>
+</div>
+<div class="text-sm font-medium">HP LaserJet Pro M404dn</div>
+<div class="flex justify-between items-center mt-1">
+<span class="text-[10px] text-[var(--erp-text-muted)]">Category: Printers</span>
+<span class="text-xs font-bold">$349.00</span>
+</div>
+</div>
+</div>
+</div>
+<main class="flex-1 flex flex-col min-w-0 bg-white">
+<div class="h-14 border-b border-[var(--erp-border)] flex items-center justify-between px-6 shrink-0 bg-slate-50">
+<div class="flex items-center gap-4">
+<h1 class="text-lg font-bold text-[var(--erp-text)]">Apple MacBook Pro 14" M2</h1>
+<span class="text-xs bg-slate-200 px-2 py-0.5 rounded text-[var(--erp-text)] font-medium">Active Item</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1 px-3 py-1.5 border border-[var(--erp-border)] bg-white rounded text-xs font-bold hover:bg-slate-50">
+<span class="material-symbols-outlined !text-sm">edit</span> EDIT
+                    </button>
+<button class="flex items-center gap-1 px-3 py-1.5 border border-[var(--erp-border)] bg-white rounded text-xs font-bold hover:bg-slate-50">
+<span class="material-symbols-outlined !text-sm">print</span> PRINT
+                    </button>
+<button class="flex items-center gap-1 px-3 py-1.5 border border-[var(--erp-border)] bg-white rounded text-xs font-bold hover:bg-slate-50 text-red-600">
+<span class="material-symbols-outlined !text-sm">delete</span> DELETE
+                    </button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+<div>
+<h3 class="text-xs font-bold text-[var(--erp-text-muted)] uppercase tracking-widest mb-3 pb-1 border-b border-[var(--erp-border)]">General Information</h3>
+<div class="space-y-2">
+<div class="flex text-sm">
+<span class="w-32 text-[var(--erp-text-muted)]">Item Name:</span>
+<span class="font-medium text-[var(--erp-text)]">Apple MacBook Pro 14" M2</span>
+</div>
+<div class="flex text-sm">
+<span class="w-32 text-[var(--erp-text-muted)]">Item SKU:</span>
+<span class="font-bold text-[var(--erp-accent)]">SKU-MAC-001</span>
+</div>
+<div class="flex text-sm">
+<span class="w-32 text-[var(--erp-text-muted)]">HSN Code:</span>
+<span class="font-medium text-[var(--erp-text)]">84713010</span>
+</div>
+<div class="flex text-sm">
+<span class="w-32 text-[var(--erp-text-muted)]">Category:</span>
+<span class="font-medium text-[var(--erp-text)]">Laptops / Electronics</span>
+</div>
+<div class="flex text-sm">
+<span class="w-32 text-[var(--erp-text-muted)]">Tax Rate:</span>
+<span class="font-medium text-[var(--erp-text)]">GST @ 18%</span>
+</div>
+</div>
+</div>
+<div>
+<h3 class="text-xs font-bold text-[var(--erp-text-muted)] uppercase tracking-widest mb-3 pb-1 border-b border-[var(--erp-border)]">Inventory Settings</h3>
+<div class="space-y-2">
+<div class="flex text-sm">
+<span class="w-32 text-[var(--erp-text-muted)]">Unit:</span>
+<span class="font-medium text-[var(--erp-text)]">Numbers (NOS)</span>
+</div>
+<div class="flex text-sm">
+<span class="w-32 text-[var(--erp-text-muted)]">Reorder Level:</span>
+<span class="font-bold text-orange-600">5 units</span>
+</div>
+<div class="flex text-sm">
+<span class="w-32 text-[var(--erp-text-muted)]">Warehouse:</span>
+<span class="font-medium text-[var(--erp-text)]">Main Warehouse (WH-01)</span>
+</div>
+<div class="flex text-sm">
+<span class="w-32 text-[var(--erp-text-muted)]">Barcode:</span>
+<span class="font-mono text-[var(--erp-text)]">194253303831</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mb-8">
+<h3 class="text-xs font-bold text-[var(--erp-text-muted)] uppercase tracking-widest mb-3">Warehouse Stock Levels</h3>
+<table class="w-full text-xs dense-table border-collapse">
+<thead class="bg-slate-100 uppercase font-bold">
+<tr>
+<th class="text-left w-1/3">Location / Warehouse</th>
+<th class="text-right">Opening Stock</th>
+<th class="text-right">Inward</th>
+<th class="text-right">Outward</th>
+<th class="text-right bg-blue-50">Current Stock</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Main Warehouse - NJ</td>
+<td class="text-right">10</td>
+<td class="text-right">5</td>
+<td class="text-right">3</td>
+<td class="text-right font-bold text-blue-600 bg-blue-50">12</td>
+</tr>
+<tr>
+<td>Satellite Store - NY</td>
+<td class="text-right">5</td>
+<td class="text-right">2</td>
+<td class="text-right">4</td>
+<td class="text-right font-bold text-blue-600 bg-blue-50">3</td>
+</tr>
+<tr>
+<td>Service Center</td>
+<td class="text-right">2</td>
+<td class="text-right">0</td>
+<td class="text-right">0</td>
+<td class="text-right font-bold text-blue-600 bg-blue-50">2</td>
+</tr>
+</tbody>
+<tfoot class="bg-slate-50 font-bold">
+<tr>
+<td>TOTAL CONSOLIDATED</td>
+<td class="text-right">17</td>
+<td class="text-right">7</td>
+<td class="text-right">7</td>
+<td class="text-right text-blue-800 bg-blue-100">17</td>
+</tr>
+</tfoot>
+</table>
+</div>
+<div class="mb-8">
+<h3 class="text-xs font-bold text-[var(--erp-text-muted)] uppercase tracking-widest mb-3">Pricing Structure</h3>
+<table class="w-full text-xs dense-table border-collapse">
+<thead class="bg-slate-100 uppercase font-bold">
+<tr>
+<th class="text-left">Price Type</th>
+<th class="text-right">Base Price</th>
+<th class="text-right">Discount %</th>
+<th class="text-right">Tax (%)</th>
+<th class="text-right bg-green-50">Final Price (Incl. Tax)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Retail (Standard)</td>
+<td class="text-right">$1,694.07</td>
+<td class="text-right">0%</td>
+<td class="text-right">18%</td>
+<td class="text-right font-bold bg-green-50">$1,999.00</td>
+</tr>
+<tr>
+<td>Wholesale (Bulk)</td>
+<td class="text-right">$1,525.42</td>
+<td class="text-right">10%</td>
+<td class="text-right">18%</td>
+<td class="text-right font-bold bg-green-50">$1,800.00</td>
+</tr>
+<tr>
+<td>Dealer / Affiliate</td>
+<td class="text-right">$1,440.68</td>
+<td class="text-right">15%</td>
+<td class="text-right">18%</td>
+<td class="text-right font-bold bg-green-50">$1,700.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div>
+<h3 class="text-xs font-bold text-[var(--erp-text-muted)] uppercase tracking-widest mb-3">Recent Transactions (Last 5)</h3>
+<div class="border border-[var(--erp-border)] rounded overflow-hidden">
+<table class="w-full text-xs text-left border-collapse">
+<thead class="bg-slate-50 text-[var(--erp-text-muted)] uppercase font-bold border-b border-[var(--erp-border)]">
+<tr>
+<th class="px-3 py-2">Date</th>
+<th class="px-3 py-2">Type</th>
+<th class="px-3 py-2">Voucher #</th>
+<th class="px-3 py-2">Party Name</th>
+<th class="px-3 py-2 text-right">Qty</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[var(--erp-border)]">
+<tr class="hover:bg-slate-50">
+<td class="px-3 py-2">05-Nov-2023</td>
+<td class="px-3 py-2 text-blue-600 font-bold italic">SALE</td>
+<td class="px-3 py-2">INV/23-24/0422</td>
+<td class="px-3 py-2">Allied Electronics Ltd.</td>
+<td class="px-3 py-2 text-right font-bold">-2</td>
+</tr>
+<tr class="hover:bg-slate-50">
+<td class="px-3 py-2">03-Nov-2023</td>
+<td class="px-3 py-2 text-green-600 font-bold italic">PURCHASE</td>
+<td class="px-3 py-2">PUR/23-24/0115</td>
+<td class="px-3 py-2">Apple Distribution North</td>
+<td class="px-3 py-2 text-right font-bold">+5</td>
+</tr>
+<tr class="hover:bg-slate-50">
+<td class="px-3 py-2">01-Nov-2023</td>
+<td class="px-3 py-2 text-blue-600 font-bold italic">SALE</td>
+<td class="px-3 py-2">INV/23-24/0401</td>
+<td class="px-3 py-2">Retail Cash Sale</td>
+<td class="px-3 py-2 text-right font-bold">-1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-2 text-right">
+<a class="text-[10px] font-bold text-[var(--erp-accent)] hover:underline uppercase" href="#">View Full Item Ledger →</a>
+</div>
+</div>
+</div>
+</main>
+</div>
+<footer class="h-6 bg-slate-200 border-t border-[var(--erp-border)] flex items-center justify-between px-3 text-[10px] text-[var(--erp-text-muted)] shrink-0">
+<div class="flex items-center gap-4">
+<div class="flex gap-1"><span class="font-bold">Company:</span> Quotebot Enterprise Pvt Ltd</div>
+<div class="flex gap-1"><span class="font-bold">Fin Year:</span> 2023-2024</div>
+<div class="flex gap-1"><span class="font-bold">Today:</span> 06-Nov-2023</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex gap-1">F1: Help</div>
+<div class="flex gap-1">F2: Date</div>
+<div class="flex gap-1">F10: Inventory</div>
+<div class="bg-[var(--erp-accent)] text-white px-2 rounded">ONLINE</div>
+</div>
+</footer>
+
+</body></html>

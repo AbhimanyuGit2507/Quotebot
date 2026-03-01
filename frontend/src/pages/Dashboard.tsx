@@ -1,0 +1,376 @@
+import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import PageLayout from '../components/common/PageLayout';
+import { useApp } from '../context/AppContext';
+
+const Dashboard: React.FC = () => {
+  const navigate = useNavigate();
+  const { rfqs, quotes, clients, products, showToast } = useApp();
+
+  // Calculate KPI data from real state
+  const kpiData = useMemo(() => {
+    const pendingRfqs = rfqs.filter(r => r.status === 'pending').length;
+    const totalRfqs = rfqs.length;
+    const sentQuotes = quotes.filter(q => q.status === 'sent').length;
+    const acceptedQuotes = quotes.filter(q => q.status === 'accepted').length;
+    const declinedQuotes = quotes.filter(q => q.status === 'declined').length;
+    const totalQuotes = quotes.length;
+    const conversionRate = totalQuotes > 0 ? Math.round((acceptedQuotes / totalQuotes) * 100) : 0;
+    
+    return [
+      { label: 'Total RFQs', value: totalRfqs.toString(), sub: `${pendingRfqs} pending`, subColor: 'text-yellow-600', icon: 'inbox' },
+      { label: 'Quotes Sent', value: sentQuotes.toString(), sub: `Total: ${totalQuotes}`, subColor: 'text-[var(--erp-accent)]', icon: 'send' },
+      { label: 'Accepted', value: acceptedQuotes.toString(), sub: `Rate: ${conversionRate}%`, subColor: 'text-green-600', icon: 'check_circle' },
+      { label: 'Declined', value: declinedQuotes.toString(), sub: `${totalQuotes > 0 ? Math.round((declinedQuotes / totalQuotes) * 100) : 0}% decline`, subColor: 'text-red-500', icon: 'cancel' },
+      { label: 'Products', value: products.length.toString(), sub: `${products.filter(p => p.status === 'active').length} active`, subColor: 'text-purple-600', icon: 'inventory_2' },
+      { label: 'Clients', value: clients.length.toString(), sub: `${clients.filter(c => c.tier === 'gold').length} gold tier`, subColor: 'text-amber-600', icon: 'groups' },
+    ];
+  }, [rfqs, quotes, clients, products]);
+
+  // Status distribution for chart
+  const quoteStatusData = useMemo(() => {
+    const total = quotes.length || 1;
+    const accepted = quotes.filter(q => q.status === 'accepted').length;
+    const declined = quotes.filter(q => q.status === 'declined').length;
+    const pending = quotes.filter(q => q.status === 'draft' || q.status === 'sent').length;
+    return {
+      accepted: Math.round((accepted / total) * 100),
+      declined: Math.round((declined / total) * 100),
+      pending: Math.round((pending / total) * 100),
+    };
+  }, [quotes]);
+
+  // Channel distribution
+  const channelData = useMemo(() => {
+    const total = rfqs.length || 1;
+    const email = rfqs.filter(r => r.channel === 'email').length;
+    const whatsapp = rfqs.filter(r => r.channel === 'whatsapp').length;
+    const manual = rfqs.filter(r => r.channel === 'manual').length;
+    return [
+      { channel: 'Email', pct: Math.round((email / total) * 100), color: 'bg-blue-500' },
+      { channel: 'WhatsApp', pct: Math.round((whatsapp / total) * 100), color: 'bg-green-500' },
+      { channel: 'Manual', pct: Math.round((manual / total) * 100), color: 'bg-slate-400' },
+    ];
+  }, [rfqs]);
+
+  // Recent RFQs (sorted by date, limited to 5)
+  const recentRfqs = useMemo(() => {
+    return [...rfqs]
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+      .slice(0, 5);
+  }, [rfqs]);
+
+  // Activity feed generated from recent data
+  const activityFeed = useMemo(() => {
+    const activities: { time: string; icon: string; color: string; text: string; action: string; onClick: () => void }[] = [];
+    
+    // Add recent RFQs as activities
+    recentRfqs.slice(0, 2).forEach((rfq, i) => {
+      activities.push({
+        time: i === 0 ? '2 min ago' : '15 min ago',
+        icon: 'mail',
+        color: 'text-blue-500',
+        text: `RFQ ${rfq.number} from ${rfq.client}`,
+        action: 'View',
+        onClick: () => navigate('/rfq-inbox'),
+      });
+    });
+    
+    // Add recent quotes
+    quotes.filter(q => q.status === 'sent').slice(0, 1).forEach(quote => {
+      activities.push({
+        time: '1 hr ago',
+        icon: 'send',
+        color: 'text-green-500',
+        text: `Quote ${quote.number} sent to ${quote.client}`,
+        action: 'Track',
+        onClick: () => navigate('/quotations'),
+      });
+    });
+    
+    return activities;
+  }, [recentRfqs, quotes, navigate]);
+
+  const getStatusBadge = (status: string) => {
+    const styles: Record<string, string> = {
+      pending: 'bg-yellow-100 text-yellow-800 border-yellow-200',
+      draft: 'bg-blue-100 text-blue-800 border-blue-200',
+      quoted: 'bg-green-100 text-green-800 border-green-200',
+      expired: 'bg-red-100 text-red-800 border-red-200',
+      converted: 'bg-purple-100 text-purple-800 border-purple-200',
+    };
+    return styles[status] || styles.pending;
+  };
+
+  const handleRefresh = () => {
+    showToast('Dashboard refreshed', 'success');
+  };
+
+  return (
+    <PageLayout>
+      <main className="flex-1 bg-white flex flex-col overflow-hidden">
+        {/* Quick Actions Bar */}
+        <div className="h-12 bg-slate-50 border-b border-[var(--erp-border)] flex items-center justify-between px-4 shrink-0">
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => navigate('/quotations')}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[var(--erp-accent)] text-white text-[12px] font-bold rounded hover:bg-opacity-90"
+            >
+              <span className="material-symbols-outlined !text-[16px]">add</span>
+              Create Quote
+            </button>
+            <button 
+              onClick={() => navigate('/rfq-inbox')}
+              className="flex items-center gap-1.5 px-3 py-1.5 border border-[var(--erp-border)] text-[12px] font-medium rounded hover:bg-white text-[var(--erp-text)]"
+            >
+              <span className="material-symbols-outlined !text-[16px]">inbox</span>
+              Go to RFQ Inbox
+            </button>
+            <button 
+              onClick={() => navigate('/products')}
+              className="flex items-center gap-1.5 px-3 py-1.5 border border-[var(--erp-border)] text-[12px] font-medium rounded hover:bg-white text-[var(--erp-text)]"
+            >
+              <span className="material-symbols-outlined !text-[16px]">inventory_2</span>
+              Manage Products
+            </button>
+          </div>
+          <div className="flex items-center gap-3 text-[11px] text-[var(--erp-text-muted)]">
+            <span>Last updated: just now</span>
+            <button onClick={handleRefresh} className="text-[var(--erp-accent)] hover:underline font-medium">Refresh</button>
+          </div>
+        </div>
+
+        {/* KPI Cards */}
+        <div className="grid grid-cols-6 gap-px bg-[var(--erp-border)] border-b border-[var(--erp-border)] shrink-0">
+          {kpiData.map((kpi, idx) => (
+            <div key={idx} className="bg-white p-3 hover:bg-slate-50 cursor-pointer transition-colors">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="material-symbols-outlined !text-[18px] text-[var(--erp-text-muted)]">{kpi.icon}</span>
+                <p className="text-[11px] text-[var(--erp-text-muted)] uppercase font-bold">{kpi.label}</p>
+              </div>
+              <h3 className="text-2xl font-bold text-[var(--erp-text)]">{kpi.value}</h3>
+              <p className={`text-[11px] ${kpi.subColor} mt-0.5`}>{kpi.sub}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex-1 flex overflow-hidden">
+          {/* Main Content */}
+          <div className="flex-1 overflow-auto p-4 bg-slate-50">
+            {/* Charts Row */}
+            <div className="grid grid-cols-3 gap-4 mb-4">
+              {/* RFQ vs Quote Timeline */}
+              <div className="bg-white border border-[var(--erp-border)] rounded shadow-sm">
+                <div className="px-3 py-2 border-b border-[var(--erp-border)] flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-[var(--erp-text-muted)] uppercase">RFQ vs Quote Trend</span>
+                  <select className="text-[10px] border border-[var(--erp-border)] rounded px-1.5 py-0.5">
+                    <option>Last 7 days</option>
+                    <option>Last 30 days</option>
+                  </select>
+                </div>
+                <div className="p-3 h-36">
+                  <div className="flex items-end justify-between h-full gap-1.5">
+                    {[rfqs.length * 10, 45, 80, 55, quotes.length * 15, 70, 85].map((h, i) => (
+                      <div key={i} className="flex-1 flex flex-col items-center gap-0.5">
+                        <div className="w-full flex gap-0.5">
+                          <div className="flex-1 bg-blue-400 rounded-t" style={{ height: `${Math.min(h, 100)}%` }}></div>
+                          <div className="flex-1 bg-emerald-400 rounded-t" style={{ height: `${Math.min(h * 0.7, 100)}%` }}></div>
+                        </div>
+                        <span className="text-[9px] text-slate-400">{['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div className="px-3 pb-2 flex gap-4 text-[10px]">
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 bg-blue-400 rounded"></span>RFQs ({rfqs.length})</span>
+                  <span className="flex items-center gap-1"><span className="w-2 h-2 bg-emerald-400 rounded"></span>Quotes ({quotes.length})</span>
+                </div>
+              </div>
+
+              {/* Acceptance Rate Pie */}
+              <div className="bg-white border border-[var(--erp-border)] rounded shadow-sm">
+                <div className="px-3 py-2 border-b border-[var(--erp-border)]">
+                  <span className="text-[11px] font-bold text-[var(--erp-text-muted)] uppercase">Quote Status</span>
+                </div>
+                <div className="p-3 flex items-center gap-4">
+                  <div className="relative w-24 h-24">
+                    <svg viewBox="0 0 36 36" className="w-full h-full">
+                      <circle cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#e2e8f0" strokeWidth="3"></circle>
+                      <circle cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#10b981" strokeWidth="3" strokeDasharray={`${quoteStatusData.accepted} ${100 - quoteStatusData.accepted}`} strokeDashoffset="25"></circle>
+                      <circle cx="18" cy="18" r="15.91549430918954" fill="transparent" stroke="#ef4444" strokeWidth="3" strokeDasharray={`${quoteStatusData.declined} ${100 - quoteStatusData.declined}`} strokeDashoffset={`${25 - quoteStatusData.accepted}`}></circle>
+                    </svg>
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="text-lg font-bold text-[var(--erp-text)]">{quoteStatusData.accepted}%</span>
+                    </div>
+                  </div>
+                  <div className="space-y-1.5 text-[11px]">
+                    <div className="flex items-center gap-2"><span className="w-2 h-2 bg-emerald-500 rounded"></span>Accepted: {quoteStatusData.accepted}%</div>
+                    <div className="flex items-center gap-2"><span className="w-2 h-2 bg-red-500 rounded"></span>Declined: {quoteStatusData.declined}%</div>
+                    <div className="flex items-center gap-2"><span className="w-2 h-2 bg-amber-500 rounded"></span>Pending: {quoteStatusData.pending}%</div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Channel Split */}
+              <div className="bg-white border border-[var(--erp-border)] rounded shadow-sm">
+                <div className="px-3 py-2 border-b border-[var(--erp-border)]">
+                  <span className="text-[11px] font-bold text-[var(--erp-text-muted)] uppercase">RFQ by Channel</span>
+                </div>
+                <div className="p-3 space-y-3">
+                  {channelData.map(ch => (
+                    <div key={ch.channel}>
+                      <div className="flex justify-between text-[11px] mb-1">
+                        <span className="text-[var(--erp-text)]">{ch.channel}</span>
+                        <span className="font-medium">{ch.pct}%</span>
+                      </div>
+                      <div className="w-full bg-slate-100 h-2 rounded overflow-hidden">
+                        <div className={`${ch.color} h-full rounded transition-all`} style={{ width: `${ch.pct}%` }}></div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Recent RFQs Table */}
+            <div className="bg-white border border-[var(--erp-border)] rounded shadow-sm">
+              <div className="px-3 py-2 border-b border-[var(--erp-border)] flex items-center justify-between">
+                <span className="text-[11px] font-bold text-[var(--erp-text-muted)] uppercase">Recent RFQs</span>
+                <button 
+                  onClick={() => navigate('/rfq-inbox')}
+                  className="text-[11px] text-[var(--erp-accent)] font-medium hover:underline"
+                >
+                  View All →
+                </button>
+              </div>
+              <table className="w-full text-[12px]">
+                <thead className="bg-slate-50 text-[10px] text-[var(--erp-text-muted)] uppercase tracking-wider">
+                  <tr>
+                    <th className="px-3 py-2 text-left">Date</th>
+                    <th className="px-3 py-2 text-left">RFQ Number</th>
+                    <th className="px-3 py-2 text-left">Client</th>
+                    <th className="px-3 py-2 text-center">Items</th>
+                    <th className="px-3 py-2 text-right">Value</th>
+                    <th className="px-3 py-2 text-center">Status</th>
+                    <th className="px-3 py-2 text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {recentRfqs.map(rfq => (
+                    <tr key={rfq.id} className="hover:bg-slate-50">
+                      <td className="px-3 py-2 text-[var(--erp-text-muted)]">{rfq.date}</td>
+                      <td className="px-3 py-2 font-medium text-[var(--erp-accent)]">{rfq.number}</td>
+                      <td className="px-3 py-2">{rfq.client}</td>
+                      <td className="px-3 py-2 text-center">{rfq.items}</td>
+                      <td className="px-3 py-2 text-right font-medium">{rfq.value}</td>
+                      <td className="px-3 py-2 text-center">
+                        <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded border ${getStatusBadge(rfq.status)}`}>
+                          {rfq.status.toUpperCase()}
+                        </span>
+                      </td>
+                      <td className="px-3 py-2 text-center">
+                        <button 
+                          onClick={() => navigate('/rfq-inbox')}
+                          className="text-[var(--erp-accent)] hover:underline font-medium"
+                        >
+                          View
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Right Sidebar */}
+          <aside className="w-64 bg-white border-l border-[var(--erp-border)] overflow-auto shrink-0">
+            {/* Activity Feed */}
+            <div className="border-b border-[var(--erp-border)]">
+              <div className="px-3 py-2 bg-slate-50 border-b border-[var(--erp-border)]">
+                <span className="text-[11px] font-bold text-[var(--erp-text-muted)] uppercase">Activity Feed</span>
+              </div>
+              <div className="divide-y divide-slate-100">
+                {activityFeed.map((activity, i) => (
+                  <div key={i} className="px-3 py-2.5 hover:bg-slate-50">
+                    <div className="flex items-start gap-2">
+                      <span className={`material-symbols-outlined !text-[16px] ${activity.color} mt-0.5`}>{activity.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-[11px] text-[var(--erp-text)] line-clamp-2">{activity.text}</p>
+                        <div className="flex items-center justify-between mt-1">
+                          <span className="text-[10px] text-[var(--erp-text-muted)]">{activity.time}</span>
+                          <button 
+                            onClick={activity.onClick}
+                            className="text-[10px] text-[var(--erp-accent)] font-medium hover:underline"
+                          >
+                            {activity.action}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                {activityFeed.length === 0 && (
+                  <div className="px-3 py-4 text-center text-[11px] text-slate-400">
+                    No recent activity
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* System Status */}
+            <div>
+              <div className="px-3 py-2 bg-slate-50 border-b border-[var(--erp-border)]">
+                <span className="text-[11px] font-bold text-[var(--erp-text-muted)] uppercase">System Status</span>
+              </div>
+              <div className="p-3 space-y-2">
+                <div className="flex items-center gap-2 text-[11px]">
+                  <span className="material-symbols-outlined !text-[14px] text-green-500">check_circle</span>
+                  <span className="flex-1">WhatsApp</span>
+                  <span className="text-green-600 font-medium">Connected</span>
+                </div>
+                <div className="flex items-center gap-2 text-[11px]">
+                  <span className="material-symbols-outlined !text-[14px] text-green-500">check_circle</span>
+                  <span className="flex-1">Email Sync</span>
+                  <span className="text-green-600 font-medium">Active</span>
+                </div>
+                <div className="flex items-center gap-2 text-[11px]">
+                  <span className="material-symbols-outlined !text-[14px] text-amber-500">warning</span>
+                  <span className="flex-1">Pending RFQs</span>
+                  <span className="text-amber-600 font-medium">{rfqs.filter(r => r.status === 'pending').length} items</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Quick Stats */}
+            <div className="border-t border-[var(--erp-border)]">
+              <div className="px-3 py-2 bg-slate-50 border-b border-[var(--erp-border)]">
+                <span className="text-[11px] font-bold text-[var(--erp-text-muted)] uppercase">Quick Stats</span>
+              </div>
+              <div className="p-3 space-y-2 text-[11px]">
+                <div className="flex justify-between">
+                  <span className="text-[var(--erp-text-muted)]">Active Products</span>
+                  <span className="font-medium">{products.filter(p => p.status === 'active').length}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[var(--erp-text-muted)]">Total Clients</span>
+                  <span className="font-medium">{clients.length}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[var(--erp-text-muted)]">Gold Clients</span>
+                  <span className="font-medium text-amber-600">{clients.filter(c => c.tier === 'gold').length}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-[var(--erp-text-muted)]">Draft Quotes</span>
+                  <span className="font-medium">{quotes.filter(q => q.status === 'draft').length}</span>
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </main>
+    </PageLayout>
+  );
+};
+
+export default Dashboard;

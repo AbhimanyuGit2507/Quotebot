@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Quotebot ERP Client Ledger</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style type="text/tailwindcss">
+        :root {
+            --primary: #1e40af;--primary-hover: #1e3a8a;
+            --background-light: #f8fafc;
+            --surface-light: #ffffff;
+            --border-light: #e2e8f0;
+            --sidebar-dark: #0f172a;
+            --text-main: #334155;
+            --text-header: #1e293b;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .ledger-row:hover {
+            background-color: #f1f5f9;
+        }
+        .ledger-row.active {
+            background-color: #e2e8f0;
+            border-left: 4px solid var(--primary);
+        }
+    </style>
+</head>
+<body class="bg-[var(--background-light)] text-[var(--text-main)] h-screen overflow-hidden flex flex-col font-['Inter']">
+<header class="bg-white border-b border-[var(--border-light)] h-12 flex items-center justify-between px-4 shrink-0 z-30">
+<div class="flex items-center gap-4">
+<div class="flex items-center text-[var(--primary)]">
+<span class="material-symbols-outlined text-2xl font-bold">account_balance_wallet</span>
+<span class="ml-2 font-bold text-lg tracking-tight uppercase">Quotebot ERP</span>
+</div>
+<div class="h-6 w-px bg-gray-200"></div>
+<span class="text-xs font-semibold text-gray-500 uppercase tracking-widest">Client Ledger</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex bg-gray-100 p-1 rounded-md text-[10px] font-bold uppercase text-gray-500">
+<span class="px-2 py-0.5 bg-white text-[var(--primary)] shadow-sm rounded">Live</span>
+<span class="px-2 py-0.5">Audit Mode</span>
+</div>
+<span class="material-symbols-outlined text-xl text-gray-400 cursor-pointer">notifications</span>
+<div class="h-8 w-8 bg-[var(--primary)] rounded-full flex items-center justify-center text-white text-xs font-bold">JD</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<aside class="w-16 bg-[var(--sidebar-dark)] flex flex-col items-center py-4 shrink-0">
+<div class="flex flex-col gap-6">
+<span class="material-symbols-outlined text-gray-400 hover:text-white cursor-pointer">dashboard</span>
+<span class="material-symbols-outlined text-white cursor-pointer">group</span>
+<span class="material-symbols-outlined text-gray-400 hover:text-white cursor-pointer">receipt_long</span>
+<span class="material-symbols-outlined text-gray-400 hover:text-white cursor-pointer">inventory</span>
+<span class="material-symbols-outlined text-gray-400 hover:text-white cursor-pointer">analytics</span>
+<div class="w-8 h-px bg-gray-700 my-2"></div>
+<span class="material-symbols-outlined text-gray-400 hover:text-white cursor-pointer">settings</span>
+</div>
+</aside>
+<div class="w-80 bg-white border-r border-[var(--border-light)] flex flex-col shrink-0">
+<div class="p-4 border-b border-[var(--border-light)] bg-gray-50">
+<div class="flex justify-between items-center mb-3">
+<h2 class="text-sm font-bold text-[var(--text-header)] uppercase tracking-wider">Directory</h2>
+<span class="material-symbols-outlined text-sm text-[var(--primary)] font-bold cursor-pointer">person_add</span>
+</div>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-2 top-1.5 text-lg text-gray-400">search</span>
+<input class="w-full pl-8 pr-3 py-1.5 text-xs bg-white border border-gray-300 rounded focus:ring-1 focus:ring-[var(--primary)] outline-none" placeholder="Search accounts..." type="text"/>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto no-scrollbar">
+<div class="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-gray-50/80 border-b border-gray-100">Most Active</div>
+<div class="ledger-row active p-4 border-b border-gray-100 cursor-pointer transition-colors">
+<div class="flex justify-between items-start mb-1">
+<span class="text-xs font-bold text-[var(--text-header)]">Global Infotech Solutions</span>
+<span class="text-[10px] font-bold text-green-600">CR</span>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-[10px] text-gray-500">ID: ACC-4921-X</span>
+<span class="text-xs font-bold">$124,500.00</span>
+</div>
+</div>
+<div class="ledger-row p-4 border-b border-gray-100 cursor-pointer transition-colors">
+<div class="flex justify-between items-start mb-1">
+<span class="text-xs font-bold text-[var(--text-header)]">Apex Logistics Ltd</span>
+<span class="text-[10px] font-bold text-red-600">DR</span>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-[10px] text-gray-500">ID: ACC-8832-B</span>
+<span class="text-xs font-bold">$42,120.50</span>
+</div>
+</div>
+<div class="ledger-row p-4 border-b border-gray-100 cursor-pointer transition-colors">
+<div class="flex justify-between items-start mb-1">
+<span class="text-xs font-bold text-[var(--text-header)]">Zenith Manufacturing</span>
+<span class="text-[10px] font-bold text-green-600">CR</span>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-[10px] text-gray-500">ID: ACC-7701-A</span>
+<span class="text-xs font-bold">$3,400.00</span>
+</div>
+</div>
+<div class="px-3 py-2 text-[10px] font-bold text-gray-400 uppercase tracking-widest bg-gray-50/80 border-b border-gray-100 mt-4">Standard Accounts</div>
+<div class="ledger-row p-4 border-b border-gray-100 cursor-pointer transition-colors">
+<div class="flex justify-between items-start mb-1">
+<span class="text-xs font-bold text-[var(--text-header)]">Delta Trading Corp</span>
+<span class="text-[10px] font-bold text-gray-400">--</span>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-[10px] text-gray-500">ID: ACC-1245-Q</span>
+<span class="text-xs font-bold">$0.00</span>
+</div>
+</div>
+<div class="ledger-row p-4 border-b border-gray-100 cursor-pointer transition-colors">
+<div class="flex justify-between items-start mb-1">
+<span class="text-xs font-bold text-[var(--text-header)]">Starlight Ventures</span>
+<span class="text-[10px] font-bold text-green-600">CR</span>
+</div>
+<div class="flex justify-between items-end">
+<span class="text-[10px] text-gray-500">ID: ACC-0034-L</span>
+<span class="text-xs font-bold">$12,880.00</span>
+</div>
+</div>
+</div>
+<div class="p-3 bg-gray-100 border-t border-gray-200">
+<div class="flex items-center justify-between text-[10px] font-bold text-gray-500 uppercase">
+<span>Active Records: 154</span>
+<span class="material-symbols-outlined text-sm">filter_list</span>
+</div>
+</div>
+</div>
+<main class="flex-1 flex flex-col min-w-0 bg-white overflow-hidden">
+<div class="h-14 border-b border-[var(--border-light)] flex items-center justify-between px-6 bg-gray-50">
+<div class="flex items-center gap-3">
+<div class="bg-blue-100 text-[var(--primary)] p-1.5 rounded">
+<span class="material-symbols-outlined">corporate_fare</span>
+</div>
+<div>
+<h1 class="text-sm font-bold text-[var(--text-header)] uppercase">Global Infotech Solutions</h1>
+<p class="text-[10px] text-gray-500 font-medium tracking-wide">MASTER LEDGER: <span class="text-[var(--primary)]">#M-2023-4921</span></p>
+</div>
+</div>
+<div class="flex items-center gap-2">
+<button class="bg-white border border-gray-300 px-3 py-1.5 text-[10px] font-bold uppercase text-gray-600 rounded hover:bg-gray-50 transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">print</span> Print
+                    </button>
+<button class="bg-white border border-gray-300 px-3 py-1.5 text-[10px] font-bold uppercase text-gray-600 rounded hover:bg-gray-50 transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">edit</span> Edit Account
+                    </button>
+<button class="bg-[var(--primary)] text-white px-3 py-1.5 text-[10px] font-bold uppercase rounded hover:bg-[var(--primary-hover)] transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-sm">add</span> New Voucher
+                    </button>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-6 space-y-8">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+<div class="space-y-4">
+<h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 pb-2">Primary Contact Details</h3>
+<div class="grid grid-cols-3 gap-y-3">
+<span class="text-[11px] text-gray-500 font-medium">Contact Person</span>
+<span class="text-[11px] font-semibold text-[var(--text-header)] col-span-2">Mr. Anirudh Sharma</span>
+<span class="text-[11px] text-gray-500 font-medium">Email Address</span>
+<span class="text-[11px] font-semibold text-blue-600 col-span-2">a.sharma@globalinfotech.com</span>
+<span class="text-[11px] text-gray-500 font-medium">Phone</span>
+<span class="text-[11px] font-semibold text-[var(--text-header)] col-span-2">+91 98765 43210</span>
+<span class="text-[11px] text-gray-500 font-medium">Billing Address</span>
+<span class="text-[11px] font-semibold text-[var(--text-header)] col-span-2 leading-relaxed">
+                                Plot No. 45, Software Park, Sector 62,<br/>Noida, Uttar Pradesh 201301
+                            </span>
+</div>
+</div>
+<div class="space-y-4">
+<h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-100 pb-2">Taxation Information</h3>
+<div class="border border-gray-200 rounded">
+<table class="w-full text-left text-[11px]">
+<tbody class="divide-y divide-gray-100">
+<tr>
+<td class="px-4 py-2.5 bg-gray-50 font-medium text-gray-500 w-1/3">GSTIN</td>
+<td class="px-4 py-2.5 font-mono font-bold text-gray-700 uppercase tracking-wider">09AAAAA0000A1Z5</td>
+</tr>
+<tr>
+<td class="px-4 py-2.5 bg-gray-50 font-medium text-gray-500">PAN Number</td>
+<td class="px-4 py-2.5 font-mono font-bold text-gray-700 uppercase tracking-wider">AAAAA1111A</td>
+</tr>
+<tr>
+<td class="px-4 py-2.5 bg-gray-50 font-medium text-gray-500">GST Registration</td>
+<td class="px-4 py-2.5"><span class="bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-[9px] font-bold uppercase">Regular</span></td>
+</tr>
+<tr>
+<td class="px-4 py-2.5 bg-gray-50 font-medium text-gray-500">MSME Status</td>
+<td class="px-4 py-2.5 text-gray-700 font-semibold">Registered (UDYAM-UP-00-12345)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center justify-between">
+<h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Recent Ledger Entries</h3>
+<a class="text-[10px] font-bold text-[var(--primary)] hover:underline uppercase" href="#">View Full Statement</a>
+</div>
+<div class="border border-gray-200 rounded overflow-hidden">
+<table class="w-full text-left text-[11px]">
+<thead class="bg-gray-100 text-gray-500 uppercase text-[9px] font-bold tracking-wider">
+<tr>
+<th class="px-4 py-2 border-r border-gray-200">Date</th>
+<th class="px-4 py-2 border-r border-gray-200">Ref. No.</th>
+<th class="px-4 py-2 border-r border-gray-200">Voucher Type</th>
+<th class="px-4 py-2 text-right border-r border-gray-200">Debit</th>
+<th class="px-4 py-2 text-right">Credit</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-gray-100">
+<tr>
+<td class="px-4 py-2.5 border-r border-gray-100">02-Nov-2023</td>
+<td class="px-4 py-2.5 border-r border-gray-100 font-mono text-blue-600">INV/23/0412</td>
+<td class="px-4 py-2.5 border-r border-gray-100">Sales Invoice</td>
+<td class="px-4 py-2.5 text-right border-r border-gray-100 font-semibold">12,400.00</td>
+<td class="px-4 py-2.5 text-right font-semibold text-gray-300">--</td>
+</tr>
+<tr>
+<td class="px-4 py-2.5 border-r border-gray-100">15-Oct-2023</td>
+<td class="px-4 py-2.5 border-r border-gray-100 font-mono text-blue-600">RCPT/23/0091</td>
+<td class="px-4 py-2.5 border-r border-gray-100">Bank Receipt</td>
+<td class="px-4 py-2.5 text-right border-r border-gray-100 font-semibold text-gray-300">--</td>
+<td class="px-4 py-2.5 text-right font-semibold">15,000.00</td>
+</tr>
+<tr>
+<td class="px-4 py-2.5 border-r border-gray-100">01-Oct-2023</td>
+<td class="px-4 py-2.5 border-r border-gray-100 font-mono text-blue-600">INV/23/0388</td>
+<td class="px-4 py-2.5 border-r border-gray-100">Sales Invoice</td>
+<td class="px-4 py-2.5 text-right border-r border-gray-100 font-semibold">8,500.00</td>
+<td class="px-4 py-2.5 text-right font-semibold text-gray-300">--</td>
+</tr>
+</tbody>
+<tfoot class="bg-gray-50 font-bold border-t border-gray-200">
+<tr>
+<td class="px-4 py-2 text-right uppercase text-[9px]" colspan="3">Closing Balance</td>
+<td class="px-4 py-2 text-right text-[var(--primary)]" colspan="2">124,500.00 CR</td>
+</tr>
+</tfoot>
+</table>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-gray-100">
+<h3 class="text-[11px] font-bold text-gray-400 uppercase tracking-widest mb-4">Performance Statistics</h3>
+<div class="grid grid-cols-4 gap-0 border border-gray-200 rounded divide-x divide-gray-200 bg-gray-50">
+<div class="p-4">
+<p class="text-[9px] font-bold text-gray-500 uppercase tracking-tight mb-1">Total Sales (YTD)</p>
+<p class="text-lg font-bold text-[var(--text-header)]">$542,000</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-green-500 text-sm">trending_up</span>
+<span class="text-[9px] text-green-600 font-bold">+18.5%</span>
+</div>
+</div>
+<div class="p-4">
+<p class="text-[9px] font-bold text-gray-500 uppercase tracking-tight mb-1">Avg. Collection Period</p>
+<p class="text-lg font-bold text-[var(--text-header)]">42 Days</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-red-500 text-sm">warning</span>
+<span class="text-[9px] text-red-600 font-bold">+4 days</span>
+</div>
+</div>
+<div class="p-4">
+<p class="text-[9px] font-bold text-gray-500 uppercase tracking-tight mb-1">Open Quotes</p>
+<p class="text-lg font-bold text-[var(--text-header)]">12</p>
+<div class="flex items-center gap-1 mt-1">
+<span class="text-[9px] text-gray-400 font-medium">Valued at $85k</span>
+</div>
+</div>
+<div class="p-4">
+<p class="text-[9px] font-bold text-gray-500 uppercase tracking-tight mb-1">Credit Limit</p>
+<p class="text-lg font-bold text-orange-600">$200,000</p>
+<div class="w-full bg-gray-200 h-1 rounded-full mt-2 overflow-hidden">
+<div class="bg-orange-500 h-full w-[62%]"></div>
+</div>
+<p class="text-[8px] text-gray-500 mt-1 uppercase font-bold">62% Utilized</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<footer class="h-6 bg-gray-800 text-white flex items-center justify-between px-3 text-[10px] uppercase font-bold tracking-tight">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1"><span class="w-2 h-2 bg-green-500 rounded-full"></span> System Ready</span>
+<span class="text-gray-400">User: Admin_Maria</span>
+<span class="text-gray-400">Session: 04:22:10</span>
+</div>
+<div class="flex items-center gap-4">
+<span class="hover:text-blue-400 cursor-pointer">Shortcuts: F1 Help | F5 Sync | F10 Exit</span>
+</div>
+</footer>
+
+</body></html>
