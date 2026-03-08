@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import PageLayout from '../components/common/PageLayout';
 import { useApp, InboxMessage } from '../context/AppContext';
+import { exportToCSV, prepareInboxMessagesForExport, getDateStamp } from '../utils/exportUtils';
 
 const Inbox: React.FC = () => {
   const { inboxMessages, updateInboxMessage, addRFQ, showToast, showConfirmModal } = useApp();
@@ -96,6 +97,11 @@ const Inbox: React.FC = () => {
     return 'text-red-600';
   };
 
+  const handleExportMessages = () => {
+    const data = prepareInboxMessagesForExport(filteredMessages);
+    exportToCSV(data, `inbox_messages_${getDateStamp()}.csv`);
+  };
+
   const unreadCount = inboxMessages.filter(m => !m.isRead).length;
 
   return (
@@ -104,9 +110,19 @@ const Inbox: React.FC = () => {
       <aside className="w-96 border-r border-[var(--erp-border)] flex flex-col bg-white shrink-0">
         <div className="h-12 border-b border-[var(--erp-border)] bg-slate-50 flex items-center justify-between px-3 shrink-0">
           <h2 className="text-sm font-bold text-[var(--erp-text)] uppercase tracking-wider">Inbox</h2>
-          <span className="text-[11px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-semibold">
-            {unreadCount} new
-          </span>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={handleExportMessages}
+              className="p-1 hover:bg-slate-200 rounded"
+              title="Export to CSV"
+              data-action="export-csv"
+            >
+              <span className="material-symbols-outlined !text-[16px] text-[var(--erp-text-muted)]">download</span>
+            </button>
+            <span className="text-[11px] bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-semibold">
+              {unreadCount} new
+            </span>
+          </div>
         </div>
         
         {/* Filters */}
@@ -119,6 +135,7 @@ const Inbox: React.FC = () => {
               className="w-full text-sm border border-[var(--erp-border)] rounded pl-7 pr-2 py-1.5 focus:ring-1 focus:ring-[var(--erp-accent)]"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              data-search="inbox"
             />
           </div>
           <div className="flex gap-2">

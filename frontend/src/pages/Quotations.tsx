@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import PageLayout from '../components/common/PageLayout';
 import { useApp, Quote, QuoteItem } from '../context/AppContext';
+import { generateQuotePDF } from '../utils/pdfUtils';
+import { exportToCSV, prepareQuotesForExport, getDateStamp } from '../utils/exportUtils';
 
 const Quotations: React.FC = () => {
   const { quotes, addQuote, updateQuote, deleteQuote, showConfirmModal, clients, products } = useApp();
@@ -46,6 +48,71 @@ const Quotations: React.FC = () => {
     return items.reduce((sum, item) => sum + item.total, 0);
   };
 
+  // Handle Print/PDF
+  const handlePrintQuote = (quote: Quote) => {
+    generateQuotePDF({
+      number: quote.number,
+      date: quote.date,
+      client: quote.client,
+      clientId: quote.clientId,
+      validUntil: quote.validUntil,
+      items: quote.items,
+      notes: quote.notes,
+    }, {
+      name: 'Quotebot Solutions Pvt Ltd',
+      gstin: '27AABCU9603R1ZM',
+      address: 'Plot 42, MIDC Industrial Area',
+      city: 'Pune',
+      state: 'Maharashtra',
+      email: 'sales@quotebot.in',
+      phone: '+91 98765 43210',
+    });
+  };
+
+  // Handle Email
+  const handleEmailQuote = (quote: Quote) => {
+    const subject = `Quotation ${quote.number} from Quotebot Solutions`;
+    const body = `Dear ${quote.client},
+
+Please find attached our quotation ${quote.number} dated ${quote.date}.
+
+Quote Details:
+- Items: ${quote.items.length}
+- Total Amount: ₹${calculateTotal(quote.items).toLocaleString('en-IN')}
+- Valid Until: ${quote.validUntil}
+
+You can review and accept this quotation by clicking the link below:
+[Review Quotation]
+
+For any questions, please feel free to contact us.
+
+Best regards,
+Quotebot Solutions Team
+sales@quotebot.in
++91 98765 43210`;
+    
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
+  // Handle Export to CSV
+  const handleExportQuotes = () => {
+    const exportData = prepareQuotesForExport(filteredQuotes);
+    exportToCSV(exportData, `quotations_${getDateStamp()}.csv`);
+  };
+
+  // Handle Duplicate Quote
+  const handleDuplicateQuote = (quote: Quote) => {
+    const newQuote: Quote = {
+      ...quote,
+      id: Date.now().toString() + Math.random(),
+      number: `QT-${Date.now().toString().slice(-4)}`,
+      date: new Date().toISOString().split('T')[0],
+      status: 'draft',
+    };
+    addQuote(newQuote);
+    setSelectedId(newQuote.id);
+  };
+
   return (
     <PageLayout>
       {/* Left Panel - Quote List */}
@@ -56,6 +123,7 @@ const Quotations: React.FC = () => {
             <button 
               onClick={() => setShowAddModal(true)}
               className="flex items-center gap-1 px-2 py-1 bg-[var(--erp-accent)] text-white text-[11px] font-bold rounded hover:bg-opacity-90"
+              data-action="new-quote"
             >
               <span className="material-symbols-outlined !text-[14px]">add</span>
               NEW QUOTE
@@ -69,20 +137,31 @@ const Quotations: React.FC = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search quotes..."
               className="w-full pl-7 pr-2 py-1.5 text-[12px] border border-[var(--erp-border)] rounded focus:ring-1 focus:ring-[var(--erp-accent)]"
+              data-search="quotations"
             />
           </div>
-          <select 
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            className="w-full text-[11px] border border-[var(--erp-border)] rounded px-1.5 py-1"
-          >
-            <option value="all">All Status</option>
-            <option value="draft">Draft</option>
-            <option value="sent">Sent</option>
-            <option value="accepted">Accepted</option>
-            <option value="declined">Declined</option>
-            <option value="expired">Expired</option>
-          </select>
+          <div className="flex gap-2">
+            <select 
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="flex-1 text-[11px] border border-[var(--erp-border)] rounded px-1.5 py-1"
+            >
+              <option value="all">All Status</option>
+              <option value="draft">Draft</option>
+              <option value="sent">Sent</option>
+              <option value="accepted">Accepted</option>
+              <option value="declined">Declined</option>
+              <option value="expired">Expired</option>
+            </select>
+            <button
+              onClick={handleExportQuotes}
+              className="px-2 py-1 border border-[var(--erp-border)] rounded text-[11px] font-medium hover:bg-slate-50"
+              title="Export to CSV"
+              data-action="export-csv"
+            >
+              <span className="material-symbols-outlined !text-[16px]">download</span>
+            </button>
+          </div>
         </div>
 
         {/* Stats Bar */}
@@ -149,11 +228,27 @@ const Quotations: React.FC = () => {
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <button className="flex items-center gap-1 px-3 py-1.5 border border-[var(--erp-border)] bg-white rounded text-[12px] font-medium hover:bg-slate-50">
+                <button 
+                  onClick={() => handlePrintQuote(selectedQuote)}
+                  className="flex items-center gap-1 px-3 py-1.5 border border-[var(--erp-border)] bg-white rounded text-[12px] font-medium hover:bg-slate-50"
+                  data-action="print"
+                >
                   <span className="material-symbols-outlined !text-[16px]">print</span> Print
                 </button>
-                <button className="flex items-center gap-1 px-3 py-1.5 border border-[var(--erp-border)] bg-white rounded text-[12px] font-medium hover:bg-slate-50">
+                <button 
+                  onClick={() => handleEmailQuote(selectedQuote)}
+                  className="flex items-center gap-1 px-3 py-1.5 border border-[var(--erp-border)] bg-white rounded text-[12px] font-medium hover:bg-slate-50"
+                  data-action="email"
+                >
                   <span className="material-symbols-outlined !text-[16px]">mail</span> Email
+                </button>
+                <button 
+                  onClick={() => handleDuplicateQuote(selectedQuote)}
+                  className="flex items-center gap-1 px-3 py-1.5 border border-[var(--erp-border)] bg-white rounded text-[12px] font-medium hover:bg-slate-50"
+                  data-action="duplicate"
+                  title="Duplicate quote"
+                >
+                  <span className="material-symbols-outlined !text-[16px]">content_copy</span> Duplicate
                 </button>
                 <button 
                   onClick={() => setEditingQuote(selectedQuote)}

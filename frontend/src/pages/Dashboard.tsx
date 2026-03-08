@@ -106,6 +106,31 @@ const Dashboard: React.FC = () => {
     showToast('Dashboard refreshed', 'success');
   };
 
+  const handleKPIClick = (index: number) => {
+    switch (index) {
+      case 0: // Total RFQs
+        navigate('/rfq-inbox');
+        break;
+      case 1: // Quotes Sent
+        navigate('/quotations');
+        break;
+      case 2: // Accepted
+        navigate('/quotations');
+        showToast('Filter by accepted status in quotations page', 'info');
+        break;
+      case 3: // Declined
+        navigate('/quotations');
+        showToast('Filter by declined status in quotations page', 'info');
+        break;
+      case 4: // Products
+        navigate('/products');
+        break;
+      case 5: // Clients
+        navigate('/clients');
+        break;
+    }
+  };
+
   return (
     <PageLayout>
       <main className="flex-1 bg-white flex flex-col overflow-hidden">
@@ -143,7 +168,11 @@ const Dashboard: React.FC = () => {
         {/* KPI Cards */}
         <div className="grid grid-cols-6 gap-px bg-[var(--erp-border)] border-b border-[var(--erp-border)] shrink-0">
           {kpiData.map((kpi, idx) => (
-            <div key={idx} className="bg-white p-3 hover:bg-slate-50 cursor-pointer transition-colors">
+            <div 
+              key={idx} 
+              onClick={() => handleKPIClick(idx)}
+              className="bg-white p-3 hover:bg-slate-50 cursor-pointer transition-colors"
+            >
               <div className="flex items-center gap-2 mb-1">
                 <span className="material-symbols-outlined !text-[18px] text-[var(--erp-text-muted)]">{kpi.icon}</span>
                 <p className="text-[11px] text-[var(--erp-text-muted)] uppercase font-bold">{kpi.label}</p>
@@ -160,10 +189,13 @@ const Dashboard: React.FC = () => {
             {/* Charts Row */}
             <div className="grid grid-cols-3 gap-4 mb-4">
               {/* RFQ vs Quote Timeline */}
-              <div className="bg-white border border-[var(--erp-border)] rounded shadow-sm">
+              <div className="bg-white border border-[var(--erp-border)] rounded shadow-sm cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate('/rfq-inbox')}>
                 <div className="px-3 py-2 border-b border-[var(--erp-border)] flex items-center justify-between">
                   <span className="text-[11px] font-bold text-[var(--erp-text-muted)] uppercase">RFQ vs Quote Trend</span>
-                  <select className="text-[10px] border border-[var(--erp-border)] rounded px-1.5 py-0.5">
+                  <select 
+                    className="text-[10px] border border-[var(--erp-border)] rounded px-1.5 py-0.5"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <option>Last 7 days</option>
                     <option>Last 30 days</option>
                   </select>
@@ -173,8 +205,8 @@ const Dashboard: React.FC = () => {
                     {[rfqs.length * 10, 45, 80, 55, quotes.length * 15, 70, 85].map((h, i) => (
                       <div key={i} className="flex-1 flex flex-col items-center gap-0.5">
                         <div className="w-full flex gap-0.5">
-                          <div className="flex-1 bg-blue-400 rounded-t" style={{ height: `${Math.min(h, 100)}%` }}></div>
-                          <div className="flex-1 bg-emerald-400 rounded-t" style={{ height: `${Math.min(h * 0.7, 100)}%` }}></div>
+                          <div className="flex-1 bg-blue-400 rounded-t transition-all hover:bg-blue-500" style={{ height: `${Math.min(h, 100)}%` }}></div>
+                          <div className="flex-1 bg-emerald-400 rounded-t transition-all hover:bg-emerald-500" style={{ height: `${Math.min(h * 0.7, 100)}%` }}></div>
                         </div>
                         <span className="text-[9px] text-slate-400">{['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}</span>
                       </div>
@@ -188,7 +220,7 @@ const Dashboard: React.FC = () => {
               </div>
 
               {/* Acceptance Rate Pie */}
-              <div className="bg-white border border-[var(--erp-border)] rounded shadow-sm">
+              <div className="bg-white border border-[var(--erp-border)] rounded shadow-sm cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate('/quotations')}>
                 <div className="px-3 py-2 border-b border-[var(--erp-border)]">
                   <span className="text-[11px] font-bold text-[var(--erp-text-muted)] uppercase">Quote Status</span>
                 </div>
@@ -212,7 +244,7 @@ const Dashboard: React.FC = () => {
               </div>
 
               {/* Channel Split */}
-              <div className="bg-white border border-[var(--erp-border)] rounded shadow-sm">
+              <div className="bg-white border border-[var(--erp-border)] rounded shadow-sm cursor-pointer hover:shadow-md transition-shadow" onClick={() => navigate('/rfq-inbox')}>
                 <div className="px-3 py-2 border-b border-[var(--erp-border)]">
                   <span className="text-[11px] font-bold text-[var(--erp-text-muted)] uppercase">RFQ by Channel</span>
                 </div>

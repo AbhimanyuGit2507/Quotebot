@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import PageLayout from '../components/common/PageLayout';
 import { useApp, Client } from '../context/AppContext';
+import { exportToCSV, prepareClientsForExport, getDateStamp } from '../utils/exportUtils';
 
 const ClientLedger: React.FC = () => {
   const { clients, addClient, updateClient, deleteClient, showConfirmModal, quotes, rfqs } = useApp();
@@ -51,6 +52,11 @@ const ClientLedger: React.FC = () => {
     return styles[tier as keyof typeof styles] || styles.regular;
   };
 
+  const handleExportClients = () => {
+    const data = prepareClientsForExport(filteredClients);
+    exportToCSV(data, `clients_${getDateStamp()}.csv`);
+  };
+
   return (
     <PageLayout>
       {/* Left Panel - Client List */}
@@ -58,13 +64,24 @@ const ClientLedger: React.FC = () => {
         <div className="p-3 border-b border-[var(--erp-border)] space-y-2">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-[var(--erp-text)] uppercase">Clients</h2>
-            <button 
-              onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-1 px-2 py-1 bg-[var(--erp-accent)] text-white text-[11px] font-bold rounded hover:bg-opacity-90"
-            >
-              <span className="material-symbols-outlined !text-[14px]">add</span>
-              ADD
-            </button>
+            <div className="flex gap-1">
+              <button 
+                onClick={handleExportClients}
+                className="px-2 py-1 border border-[var(--erp-border)] bg-white text-[11px] font-medium rounded hover:bg-slate-50"
+                title="Export to CSV"
+                data-action="export-csv"
+              >
+                <span className="material-symbols-outlined !text-[14px]">download</span>
+              </button>
+              <button 
+                onClick={() => setShowAddModal(true)}
+                className="flex items-center gap-1 px-2 py-1 bg-[var(--erp-accent)] text-white text-[11px] font-bold rounded hover:bg-opacity-90"
+                data-action="new-client"
+              >
+                <span className="material-symbols-outlined !text-[14px]">add</span>
+                ADD
+              </button>
+            </div>
           </div>
           <div className="relative">
             <span className="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 !text-[16px]">search</span>
@@ -74,6 +91,7 @@ const ClientLedger: React.FC = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search clients..."
               className="w-full pl-7 pr-2 py-1.5 text-[12px] border border-[var(--erp-border)] rounded focus:ring-1 focus:ring-[var(--erp-accent)]"
+              data-search="clients"
             />
           </div>
           <select 

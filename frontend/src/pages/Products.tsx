@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import PageLayout from '../components/common/PageLayout';
 import { useApp, Product } from '../context/AppContext';
+import { exportToCSV, prepareProductsForExport, getDateStamp } from '../utils/exportUtils';
 
 const Products: React.FC = () => {
   const { products, addProduct, updateProduct, deleteProduct, showConfirmModal } = useApp();
@@ -48,6 +49,12 @@ const Products: React.FC = () => {
     return styles[status as keyof typeof styles] || styles.active;
   };
 
+  // Handle Export to CSV
+  const handleExportProducts = () => {
+    const exportData = prepareProductsForExport(filteredProducts);
+    exportToCSV(exportData, `products_${getDateStamp()}.csv`);
+  };
+
   return (
     <PageLayout>
       {/* Left Panel - Product List */}
@@ -55,13 +62,24 @@ const Products: React.FC = () => {
         <div className="p-3 border-b border-[var(--erp-border)] space-y-2">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-[var(--erp-text)] uppercase">Products</h2>
-            <button 
-              onClick={() => setShowAddModal(true)}
-              className="flex items-center gap-1 px-2 py-1 bg-[var(--erp-accent)] text-white text-[11px] font-bold rounded hover:bg-opacity-90"
-            >
-              <span className="material-symbols-outlined !text-[14px]">add</span>
-              ADD
-            </button>
+            <div className="flex gap-1">
+              <button 
+                onClick={handleExportProducts}
+                className="px-2 py-1 border border-[var(--erp-border)] bg-white text-[11px] font-medium rounded hover:bg-slate-50"
+                title="Export to CSV"
+                data-action="export-csv"
+              >
+                <span className="material-symbols-outlined !text-[14px]">download</span>
+              </button>
+              <button 
+                onClick={() => setShowAddModal(true)}
+                className="flex items-center gap-1 px-2 py-1 bg-[var(--erp-accent)] text-white text-[11px] font-bold rounded hover:bg-opacity-90"
+                data-action="new-product"
+              >
+                <span className="material-symbols-outlined !text-[14px]">add</span>
+                ADD
+              </button>
+            </div>
           </div>
           <div className="relative">
             <span className="material-symbols-outlined absolute left-2 top-1/2 -translate-y-1/2 text-slate-400 !text-[16px]">search</span>
@@ -71,6 +89,7 @@ const Products: React.FC = () => {
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search products..."
               className="w-full pl-7 pr-2 py-1.5 text-[12px] border border-[var(--erp-border)] rounded focus:ring-1 focus:ring-[var(--erp-accent)]"
+              data-search="products"
             />
           </div>
           <div className="flex gap-1">

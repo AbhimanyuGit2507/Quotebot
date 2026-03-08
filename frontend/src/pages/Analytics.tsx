@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import PageLayout from '../components/common/PageLayout';
 import { useApp } from '../context/AppContext';
+import { exportToCSV, prepareRFQsForExport, prepareQuotesForExport, prepareProductsForExport, prepareClientsForExport, getDateStamp } from '../utils/exportUtils';
 
 interface ReportItem {
   id: string;
@@ -64,8 +65,32 @@ const Analytics: React.FC = () => {
   }, [rfqs, quotes, products, clients]);
 
   const handleExport = () => {
-    showToast('Exporting report...', 'info');
-    setTimeout(() => showToast('Report exported successfully', 'success'), 1500);
+    let data: any[] = [];
+    let filename = `analytics_${selectedReportId}_${getDateStamp()}.csv`;
+
+    switch (selectedReportId) {
+      case 'rfq-analysis':
+      case 'channel-breakdown':
+        data = prepareRFQsForExport(rfqs);
+        break;
+      case 'quote-performance':
+        data = prepareQuotesForExport(quotes);
+        break;
+      case 'product-performance':
+        data = prepareProductsForExport(products);
+        break;
+      case 'client-insights':
+        data = prepareClientsForExport(clients);
+        break;
+      case 'sales-trends':
+      default:
+        // For sales trends, export accepted quotes
+        data = prepareQuotesForExport(quotes.filter(q => q.status === 'accepted'));
+        break;
+    }
+
+    exportToCSV(data, filename);
+    showToast('Report exported successfully', 'success');
   };
 
   const handlePrint = () => {
