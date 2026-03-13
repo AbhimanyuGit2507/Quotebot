@@ -1,0 +1,390 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// TENANCY & USERS
+// ============================================
+
+model Tenant {
+  id              String    @id @default(cuid())
+  company_name    String    @unique
+  trading_name    String?
+  plan            String    @default("basic")
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  users           User[]
+  products        Product[]
+  product_categories ProductCategory[]
+  clients         Client[]
+  rfqs            RFQ[]
+  quotations      Quotation[]
+  activities      Activity[]
+  files           File[]
+  analytics_cache AnalyticsCache[]
+  audit_logs      AuditLog[]
+  settings_company SettingsCompany?
+  settings_notifications SettingsNotifications?
+  automation_rules AutomationRule[]
+
+  @@index([company_name])
+}
+
+model Role {
+  id              String    @id @default(cuid())
+  name            String    @unique
+  permissions_json String   @default("[]")
+  created_at      DateTime  @default(now())
+
+  users           User[]
+}
+
+model User {
+  id              String    @id @default(cuid())
+  tenant_id       String
+  email           String    @unique
+  password_hash   String
+  name            String
+  role_id         String
+  status          String    @default("active")
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  tenant          Tenant    @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  role            Role      @relation(fields: [role_id], references: [id])
+  activities      Activity[]
+  audit_logs      AuditLog[]
+
+  @@unique([tenant_id, email])
+  @@index([tenant_id])
+  @@index([role_id])
+}
+
+// ============================================
+// PRODUCTS & CATEGORIES
+// ============================================
+
+model ProductCategory {
+  id              String    @id @default(cuid())
+  tenant_id       String
+  name            String
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  tenant          Tenant    @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  products        Product[]
+
+  @@unique([tenant_id, name])
+  @@index([tenant_id])
+}
+
+model Product {
+  id              String    @id @default(cuid())
+  tenant_id       String
+  sku             String
+  name            String
+  category_id     String
+  unit            String
+  price           Float
+  cost            Float
+  stock           Int       @default(0)
+  reorder_level   Int       @default(10)
+  hsn             String?
+  gst_percent     Float     @default(18)
+  description     String?
+  status          String    @default("active")
+  image_url       String?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  tenant          Tenant    @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  category        ProductCategory @relation(fields: [category_id], references: [id])
+  rfq_items       RFQItem[]
+  quotation_items QuotationItem[]
+
+  @@unique([tenant_id, sku])
+  @@index([tenant_id])
+  @@index([category_id])
+  @@index([status])
+}
+
+// ============================================
+// CLIENTS
+// ============================================
+
+model Client {
+  id              String    @id @default(cuid())
+  tenant_id       String
+  name            String
+  type            String    // B2B or B2C
+  email           String
+  phone           String?
+  website         String?
+  address         String?
+  city            String?
+  state           String?
+  gst             String?
+  pan             String?
+  tier            String    @default("regular")
+  total_orders    Int       @default(0)
+  total_value     Float     @default(0)
+  last_order_date DateTime?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  tenant          Tenant    @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  rfqs            RFQ[]
+  quotations      Quotation[]
+
+  @@unique([tenant_id, email])
+  @@index([tenant_id])
+  @@index([tier])
+  @@index([email])
+}
+
+// ============================================
+// RFQs
+// ============================================
+
+model RFQ {
+  id              String    @id @default(cuid())
+  tenant_id       String
+  number          String
+  client_id       String
+  channel         String    // email, whatsapp, manual
+  priority        String    @default("medium")
+  status          String    @default("pending")
+  confidence_score Int     @default(0)
+  due_date        DateTime?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  tenant          Tenant    @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  client          Client    @relation(fields: [client_id], references: [id])
+  items           RFQItem[]
+
+  @@unique([tenant_id, number])
+  @@index([tenant_id])
+  @@index([client_id])
+  @@index([status])
+  @@index([channel])
+}
+
+model RFQItem {
+  id              String    @id @default(cuid())
+  rfq_id          String
+  product_id      String
+  product_name    String
+  quantity        Float
+  unit            String
+  notes           String?
+
+  rfq             RFQ       @relation(fields: [rfq_id], references: [id], onDelete: Cascade)
+  product         Product   @relation(fields: [product_id], references: [id])
+
+  @@index([rfq_id])
+  @@index([product_id])
+}
+
+// ============================================
+// QUOTATIONS
+// ============================================
+
+model Quotation {
+  id              String    @id @default(cuid())
+  tenant_id       String
+  number          String
+  client_id       String
+  date            String    // YYYY-MM-DD
+  valid_until     String    // YYYY-MM-DD
+  subtotal        Float     @default(0)
+  tax             Float     @default(0)
+  total           Float     @default(0)
+  status          String    @default("draft")
+  terms_conditions String?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  tenant          Tenant    @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  client          Client    @relation(fields: [client_id], references: [id])
+  items           QuotationItem[]
+  versions        QuotationVersion[]
+
+  @@unique([tenant_id, number])
+  @@index([tenant_id])
+  @@index([client_id])
+  @@index([status])
+}
+
+model QuotationItem {
+  id              String    @id @default(cuid())
+  quotation_id    String
+  product_id      String
+  product_name    String
+  quantity        Float
+  unit            String
+  unit_price      Float
+  tax_percent     Float
+  total           Float
+
+  quotation       Quotation @relation(fields: [quotation_id], references: [id], onDelete: Cascade)
+  product         Product   @relation(fields: [product_id], references: [id])
+
+  @@index([quotation_id])
+  @@index([product_id])
+}
+
+model QuotationVersion {
+  id              String    @id @default(cuid())
+  quotation_id    String
+  version_number  Int
+  snapshot_json   String    // JSON snapshot of quotation at this version
+  created_at      DateTime  @default(now())
+
+  quotation       Quotation @relation(fields: [quotation_id], references: [id], onDelete: Cascade)
+
+  @@unique([quotation_id, version_number])
+  @@index([quotation_id])
+}
+
+// ============================================
+// ACTIVITIES & AUDIT
+// ============================================
+
+model Activity {
+  id              String    @id @default(cuid())
+  tenant_id       String
+  entity_type     String    // 'Product', 'Client', 'RFQ', 'Quotation'
+  entity_id       String
+  action          String    // 'created', 'updated', 'deleted'
+  user_id         String?
+  created_at      DateTime  @default(now())
+
+  tenant          Tenant    @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  user            User?     @relation(fields: [user_id], references: [id])
+
+  @@index([tenant_id])
+  @@index([entity_type])
+  @@index([entity_id])
+  @@index([created_at])
+}
+
+model AuditLog {
+  id              String    @id @default(cuid())
+  tenant_id       String
+  user_id         String?
+  action          String
+  entity_type     String
+  entity_id       String
+  before_json     String?   // JSON of previous state
+  after_json      String?   // JSON of new state
+  created_at      DateTime  @default(now())
+
+  tenant          Tenant    @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+  user            User?     @relation(fields: [user_id], references: [id])
+
+  @@index([tenant_id])
+  @@index([entity_type])
+  @@index([entity_id])
+  @@index([created_at])
+}
+
+// ============================================
+// FILES
+// ============================================
+
+model File {
+  id              String    @id @default(cuid())
+  tenant_id       String
+  filename        String
+  mime_type       String
+  size            Int
+  storage_path    String
+  created_at      DateTime  @default(now())
+
+  tenant          Tenant    @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+
+  @@index([tenant_id])
+  @@index([created_at])
+}
+
+// ============================================
+// ANALYTICS
+// ============================================
+
+model AnalyticsCache {
+  id              String    @id @default(cuid())
+  tenant_id       String
+  metric_key      String
+  metric_value_json String
+  updated_at      DateTime  @updatedAt
+
+  tenant          Tenant    @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+
+  @@unique([tenant_id, metric_key])
+  @@index([tenant_id])
+}
+
+// ============================================
+// SETTINGS
+// ============================================
+
+model SettingsCompany {
+  id              String    @id @default(cuid())
+  tenant_id       String    @unique
+  currency        String    @default("INR")
+  logo_url        String?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  tenant          Tenant    @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+}
+
+model SettingsNotifications {
+  id              String    @id @default(cuid())
+  tenant_id       String    @unique
+  new_rfq         Boolean   @default(true)
+  quote_sent      Boolean   @default(true)
+  quote_viewed    Boolean   @default(true)
+  quote_accepted  Boolean   @default(true)
+  quote_declined  Boolean   @default(true)
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  tenant          Tenant    @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+}
+
+model SettingsTemplate {
+  id              String    @id @default(cuid())
+  tenant_id       String
+  template_key    String    // 'quote_template', 'rfq_response', 'email_signature'
+  content         String
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  @@unique([tenant_id, template_key])
+  @@index([tenant_id])
+}
+
+model AutomationRule {
+  id              String    @id @default(cuid())
+  tenant_id       String
+  name            String
+  condition       String
+  action          String
+  active          Boolean   @default(true)
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  tenant          Tenant    @relation(fields: [tenant_id], references: [id], onDelete: Cascade)
+
+  @@index([tenant_id])
+}
