@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: quotebot-backend
+    runtime: node
+    region: oregon
+    rootDir: backend
+    buildCommand: npm install --legacy-peer-deps && npx prisma generate && npx prisma migrate deploy && npm run build
+    startCommand: npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: API_PREFIX
+        value: api
+      - key: DATABASE_URL
+        fromDatabase:
+          name: quotebot-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: JWT_EXPIRATION
+        value: "24h"
+      - key: JWT_REFRESH_EXPIRATION
+        value: "14d"
+      - key: AUTH_COOKIE_SECURE
+        value: "true"
+      - key: AUTH_COOKIE_SAMESITE
+        value: "none"
+      - key: CORS_ORIGIN
+        sync: false
+      - key: UPLOAD_FOLDER
+        value: /tmp/quotebot-uploads
+
+databases:
+  - name: quotebot-db
+    plan: free
+    databaseName: quotebot_db
+    region: oregon
